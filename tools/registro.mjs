@@ -14,6 +14,7 @@ const RAW = path.join(ROOT, 'raw');
 const idx = JSON.parse(fs.readFileSync(path.join(RAW, 'bp3d-index.json'), 'utf8'));
 
 export function loadBP(fj) {
+  if (!fs.existsSync(path.join(RAW, 'bp3d-isa', 'isa_BP3D_4.0_obj_99'))) throw new Error('Faltan los OBJ de BodyParts3D: ejecuta primero «python tools/extraer.py».');
   const m = ML.parseOBJ(fs.readFileSync(path.join(RAW, 'bp3d-isa', 'isa_BP3D_4.0_obj_99', fj + '.obj'), 'utf8'));
   // (x izq, y post, z arriba) -> (x izq, y arriba, z ant)
   const p = m.pos;

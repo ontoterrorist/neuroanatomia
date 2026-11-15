@@ -33,7 +33,7 @@ const app = {
     }
     return this.mods[modo];
   },
-  abrirFicha() { if (matchMedia('(max-width: 860px)').matches) $('#app').classList.add('abre-der'); },
+  abrirFicha() { if (matchMedia('(max-width: 860px)').matches) { $('#app').classList.remove('abre-izq'); $('#app').classList.add('abre-der'); } },
   /** Acción genérica usada por enlaces «ver en 3D» del curso, la búsqueda y las fichas. */
   accion(a) {
     if (!a) return;
@@ -76,6 +76,8 @@ $$('#modos button').forEach(b => b.addEventListener('click', () => app.ir(b.data
 $('#btn-menu').addEventListener('click', () => { $('#app').classList.toggle('abre-izq'); $('#app').classList.remove('abre-der'); });
 $('#btn-info').addEventListener('click', () => { $('#app').classList.toggle('abre-der'); $('#app').classList.remove('abre-izq'); });
 $('#lienzo').addEventListener('pointerdown', () => $('#app').classList.remove('abre-izq', 'abre-der'));
+// en pantallas angostas, elegir un elemento de la lista cierra el panel de navegación
+$('#izq').addEventListener('click', (e) => { if (matchMedia('(max-width: 860px)').matches && e.target.closest('.uni, .item, .presets button') && !e.target.closest('.ojo')) setTimeout(() => $('#app').classList.remove('abre-izq'), 0); });
 
 // ───────────────────────────── búsqueda global
 const dlg = $('#dlg-buscar'), q = $('#q'), res = $('#resultados');

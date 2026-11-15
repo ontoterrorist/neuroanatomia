@@ -26,6 +26,7 @@ No hay paso de compilación para la aplicación (`index.html`, `css/`, `js/`, `d
 
 ```bash
 npm install
+python tools/extraer.py           # descomprime raw/bp3d-isa/isa.zip (solo si falta la carpeta extraída)
 python tools/build-mol.py        # proteínas (PDB) y moléculas (PubChem) -> assets/prot, assets/moleculas.json
 node tools/build-meshes.mjs      # encéfalo, cuerpo y médula -> assets/encefalo.glb, assets/cuerpo.glb
 node tools/build-nervios.mjs     # nervios esquemáticos -> assets/nervios.glb
