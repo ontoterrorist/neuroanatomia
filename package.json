@@ -1,0 +1,16 @@
+{
+  "name": "neuroanatomia",
+  "private": true,
+  "type": "module",
+  "description": "Atlas interactivo de neuroanatomía funcional (herramientas de construcción)",
+  "scripts": {
+    "meshes": "node tools/build-meshes.mjs"
+  },
+  "dependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
+    "meshoptimizer": "^1.3.0",
+    "three": "^0.187.0"
+  }
+}

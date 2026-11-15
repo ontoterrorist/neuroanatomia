@@ -1,0 +1,37 @@
+// Valida las referencias cruzadas del contenido: enlaces del curso, preguntas, vías y fichas.
+// Uso: node tools/validar.mjs
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const R = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const imp = (f) => import('file://' + path.join(R, f).replace(/\\/g, '/'));
+const [c1, c2, pr, vi, mo, mi, ea, eb, cu, ne] = await Promise.all(['data/curso-1.js', 'data/curso-2.js', 'data/preguntas.js', 'data/vias.js', 'data/moleculas.js', 'data/micro.js', 'data/estructuras-a.js', 'data/estructuras-b.js', 'data/cuerpo.js', 'data/nervios.js'].map(imp));
+const cat = { ...ea.A, ...eb.B, ...cu.CUERPO, ...ne.NERVIOS };
+const man = Object.assign({}, ...['encefalo', 'cuerpo', 'nervios'].map(f => JSON.parse(fs.readFileSync(path.join(R, 'assets', f + '.json'), 'utf8'))));
+const U = [...c1.SEMESTRE_1.unidades, ...c2.SEMESTRE_2.unidades], ids = new Set(U.map(u => u.id));
+const vias = new Set(vi.VIAS.map(x => x.id));
+const micro = new Set(['c:corteza', 'c:cerebelo', 'c:medula', 'n:neurona', 'n:glia', ...Object.keys(mi.SINAPSIS).map(k => 's:' + k), ...mo.PROTEINAS.map(x => 'p:' + x.id), ...mo.MOLECULAS.map(x => 'q:' + x.id)]);
+const vistas = new Set(['encefalo', 'interior', 'cabeza', 'vasos', 'neuroeje', 'cuerpo']);
+let bad = 0; const err = (...a) => { console.log('  ✗', ...a); bad++; };
+const enlace = (a, donde) => { const i = a.indexOf(':'), t = a.slice(0, i), id = a.slice(i + 1); const ok = t === 'e' ? !!cat[id] && (man[id] || man[id + '_L']) : t === 'v' ? vias.has(id) : t === 'm' ? micro.has(id) : t === 'vista' ? vistas.has(id) : t === 'l' ? ids.has(id) : false; if (!ok) err('enlace', donde, a); };
+let palabras = 0;
+for (const u of U) {
+  for (const m of u.html.matchAll(/data-a="([^"]+)"/g)) enlace(m[1], u.id);
+  for (const r of u.rel || []) if (!cat[r]) err('rel', u.id, r);
+  palabras += u.html.replace(/<[^>]+>/g, ' ').split(/\s+/).length;
+}
+const porU = {};
+for (const q of pr.PREGUNTAS) { porU[q[0]] = (porU[q[0]] || 0) + 1; if (!ids.has(q[0]) || q[2].length !== 4 || new Set(q[2]).size !== 4) err('pregunta', q[0], q[1].slice(0, 40)); }
+for (const q of pr.CASOS) { if (!ids.has(q[0]) || q[2].length !== 4) err('caso', q[1].slice(0, 40)); enlace(q[4], 'caso'); }
+for (const s of Object.values(mi.SINAPSIS)) for (const [id] of s.enlaces) if (!micro.has(id)) err('sinapsis', id);
+for (const v of vi.VIAS) { const chk = (r) => { const id = typeof r === 'string' ? r : r.en; if (id && !man[id] && !man[id + '_L']) err('vía', v.id, id); }; for (const t of v.tramos) t.pts.forEach(chk); for (const p of v.pasos) chk(p.en); for (const b of v.solidos || []) if (!cat[b]) err('sólido', v.id, b); }
+for (const k of Object.keys(man)) if (!cat[k.replace(/_(L|R)$/, '')]) err('malla sin ficha', k);
+for (const p of mo.PROTEINAS) if (!fs.existsSync(path.join(R, 'assets', 'prot', p.id + '.json'))) err('proteína sin datos', p.id);
+const mj = JSON.parse(fs.readFileSync(path.join(R, 'assets', 'moleculas.json'), 'utf8'));
+for (const m of mo.MOLECULAS) if (!mj[m.id]) err('molécula sin datos', m.id);
+const w = (o) => JSON.stringify(o).split(/\s+/).length;
+console.log(`unidades ${U.length} · palabras del curso ${palabras} · preguntas ${pr.PREGUNTAS.length} · casos ${pr.CASOS.length} · vías ${vi.VIAS.length} · fichas ${Object.keys(cat).length} · proteínas ${mo.PROTEINAS.length} · moléculas ${mo.MOLECULAS.length}`);
+console.log(`palabras: fichas ${w(cat)} · vías ${w(vi.VIAS)} · moléculas ${w(mo.PROTEINAS) + w(mo.MOLECULAS)} · microescala ${w(mi.SINAPSIS) + w(mi.CIRCUITOS) + w(mi.PARTES)}`);
+console.log('unidades sin preguntas:', U.filter(u => !porU[u.id]).map(u => u.id).join(' ') || 'ninguna');
+console.log(bad ? `${bad} errores` : 'sin errores');
+process.exit(bad ? 1 : 0);
