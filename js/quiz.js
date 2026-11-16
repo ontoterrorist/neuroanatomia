@@ -76,11 +76,14 @@ export async function crear(app, esc, atlas) {
     nervios: { n: 'Nervios craneales y periféricos', d: 'Los doce pares, plexos y nervios de los miembros.', g: /^(nc|plexos|sna)/, capas: { corteza: 1, tronco: 1, cerebelo: 1, medula: 1, craneales: 1, nervios: 1, autonomo: 1, craneo: 2, columna: 2, esqueleto: 2, ojos: 1 }, caja: 'cuerpo' },
   };
   let est3d = null;
-  function limpiar3d() { if (!est3d) return; app.alPicar = null; app.sinPistas = false; Object.assign(atlas.capas, est3d.g.capas); atlas.aislados = est3d.g.aislados; atlas.ocultos = est3d.g.ocultos; atlas.hemi = est3d.g.hemi; atlas.sel = null; atlas.actualizar(); est3d = null; $('#app').dataset.modo = 'quiz'; pag.hidden = false; }
+  // al salir se devuelve el atlas tal como estaba: capas, aislamiento, hemisferios, color, corte y separación
+  function limpiar3d() { if (!est3d) return; const g = est3d.g; app.alPicar = null; app.sinPistas = false; Object.assign(atlas.capas, g.capas); atlas.aislados = g.aislados; atlas.ocultos = g.ocultos; atlas.hemi = g.hemi; atlas.color = g.color; atlas.corte = g.corte; atlas.sel = null; atlas.setExplota(g.explota); atlas.setCorte(atlas.corte.eje); est3d = null; $('#app').dataset.modo = 'quiz'; pag.hidden = false; }
   function iniciar3d(k) {
     const S = SETS[k];
     const bases = [...atlas.porBase.keys()].filter(b => S.g.test(atlas.cat[b].g) || S.extra?.includes(b));
-    est3d = { S, bases, cola: baraja(bases).slice(0, 15), i: 0, ok: 0, g: { capas: { ...atlas.capas }, aislados: atlas.aislados, ocultos: atlas.ocultos, hemi: { ...atlas.hemi } } };
+    // «Otra ronda» no pasa por limpiar3d: se conserva el estado guardado en la primera ronda
+    const g = est3d?.g || { capas: { ...atlas.capas }, aislados: atlas.aislados, ocultos: atlas.ocultos, hemi: { ...atlas.hemi }, color: atlas.color, corte: { ...atlas.corte }, explota: atlas.explota };
+    est3d = { S, bases, cola: baraja(bases).slice(0, 15), i: 0, ok: 0, g };
     $('#app').dataset.modo = 'quiz3d'; pag.hidden = true; app.sinPistas = true;
     esc.usar('atlas', atlas.scene, atlas.modo, 0.01, atlas.camIni); esc.resize();
     for (const c of CAPAS) atlas.capas[c[0]] = S.capas[c[0]] || 0;

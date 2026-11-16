@@ -2,7 +2,7 @@
 import { THREE } from './escena.js';
 import { VIAS, GRUPOS_VIAS } from '../data/vias.js';
 import { CAPAS } from '../data/grupos.js';
-import { $, $$, h, ICO } from './ui.js';
+import { $, $$, h, ICO, TECLA } from './ui.js';
 
 export async function crear(app, esc, atlas) {
   let actual = null, paso = -1, tramos = [], guardado = null, marca = null, etq = null, pausa = false, visibles = null;
@@ -48,7 +48,7 @@ export async function crear(app, esc, atlas) {
     if (caja.getSize(new THREE.Vector3()).length() < 10) caja.expandByScalar(3);
     esc.encuadrar(caja, dir, 1.12);
     pintarLista(); pintarFicha();
-    try { history.replaceState(null, '', '#vias/' + v.id); } catch { /* */ }
+    app.ruta('#vias/' + v.id);
   }
 
   function irPaso(k) {
@@ -75,7 +75,7 @@ export async function crear(app, esc, atlas) {
     const lista = h('div', { class: 'desplaza' });
     for (const [g, n] of GRUPOS_VIAS) {
       const vs = VIAS.filter(v => v.g === g); if (!vs.length) continue;
-      lista.append(h('div', { class: 'temario' }, h('div', { class: 'sem' }, n), vs.map(v => h('div', { class: 'uni' + (v === actual ? ' sel' : ''), onclick: () => mostrar(v.id) }, h('span', null, h('div', { style: { color: 'inherit', fontWeight: 500 } }, v.n), h('div', { style: { fontSize: '11.5px', color: 'var(--texto3)' } }, v.sub))))));
+      lista.append(h('div', { class: 'temario' }, h('div', { class: 'sem' }, n), vs.map(v => h('div', { ...TECLA, class: 'uni' + (v === actual ? ' sel' : ''), onclick: () => mostrar(v.id) }, h('span', null, h('div', { style: { color: 'inherit', fontWeight: 500 } }, v.n), h('div', { style: { fontSize: '11.5px', color: 'var(--texto3)' } }, v.sub))))));
     }
     izq.append(h('div', { class: 'cab' }, h('h2', null, 'Vías y circuitos'), h('p', null, `${VIAS.length} recorridos animados sobre el modelo.`)), lista);
     $('#izq .uni.sel')?.scrollIntoView({ block: 'nearest' });
@@ -95,7 +95,7 @@ export async function crear(app, esc, atlas) {
       h('h3', null, 'Neuronas y tramos'),
       h('div', { class: 'rel' }, v.tramos.map((t, k) => h('button', { style: { opacity: visibles[k] ? 1 : 0.45 }, title: 'Mostrar u ocultar este tramo', onclick: (e) => { visibles[k] = !visibles[k]; for (const o of tramos[k].objs) o.visible = visibles[k]; e.currentTarget.style.opacity = visibles[k] ? 1 : 0.45; } }, h('span', { style: { display: 'inline-block', width: '22px', height: '4px', borderRadius: '2px', background: t.col, verticalAlign: 'middle', marginRight: '8px' } }), t.n))),
       h('h3', null, 'Recorrido'),
-      h('ol', { class: 'pasos' }, v.pasos.map((p, k) => h('li', { class: k === paso ? 'on' : '', onclick: () => irPaso(k) }, h('b', null, p.t), h('div', null, p.d)))),
+      h('ol', { class: 'pasos' }, v.pasos.map((p, k) => h('li', { ...TECLA, class: k === paso ? 'on' : '', onclick: () => irPaso(k) }, h('b', null, p.t), h('div', null, p.d)))),
       h('h3', null, 'Correlación clínica'), h('p', { class: 'clin' }, v.clin),
       app.leccionesDeVia?.(v.id)));
   }

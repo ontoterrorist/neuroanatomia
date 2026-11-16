@@ -25,6 +25,7 @@ export class Escenario {
     this.ray = new THREE.Raycaster();
     this.vuelo = null;
     this._estados = new Map();
+    this.visible = () => true;      // lo define la app: si el lienzo está oculto no se dibuja
     this._t0 = performance.now() / 1000; this._tp = this._t0;
     this._eventos();
     new ResizeObserver(() => this.resize()).observe(canvas.parentElement);
@@ -111,6 +112,7 @@ export class Escenario {
 
   _frame() {
     const ahora = performance.now() / 1000; const dt = Math.min(ahora - this._tp, 0.1), t = ahora - this._t0; this._tp = ahora;
+    if (!this.visible()) return;   // curso y evaluación tapan el lienzo: no gastar GPU
     if (this.vuelo) {
       const v = this.vuelo; let k = (performance.now() - v.i) / v.ms; if (k >= 1) { k = 1; this.vuelo = null; }
       const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;

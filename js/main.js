@@ -17,13 +17,22 @@ const app = {
     if (modo === 'atlas') {
       esc3d.usar('atlas', atlas.scene, atlas.modo, 0.01, atlas.camIni);
       atlas.extra.clear(); atlas.montar();
+      const base = arg && atlas.porBase.has(arg) ? arg : atlas.sel;
+      this.ruta('#atlas' + (base ? '/' + base : ''));   // antes de seleccionar, que solo reemplaza la entrada
       if (arg) atlas.seleccionar(arg, { revelar: true, volar: true });
     } else {
       const m = await this.modulo(modo);
       if (this.modo !== modo) return;
       await m.entrar(arg);
     }
-    try { history.replaceState(null, '', '#' + modo + (typeof arg === 'string' ? '/' + arg : '')); } catch { /* sin historial */ }
+    // vías, micro y curso fijan su propia dirección (con la vía, escena o unidad abierta)
+    if (modo !== 'atlas' && !location.hash.startsWith('#' + modo)) this.ruta('#' + modo + (typeof arg === 'string' ? '/' + arg : ''));
+  },
+  /** Cambia la dirección: una entrada nueva en el historial (para que funcione «Atrás»), o la reemplaza. */
+  ruta(dir, reemplazar = false) {
+    let ahora = location.hash; try { ahora = decodeURIComponent(ahora); } catch { /* tal cual */ }
+    if (ahora === dir) return;
+    try { history[reemplazar || this.desdeHistorial || !location.hash ? 'replaceState' : 'pushState'](null, '', dir); } catch { /* sin historial */ }
   },
   async modulo(modo) {
     if (!this.mods[modo]) {
@@ -67,8 +76,17 @@ const app = {
   indices: [],     // proveedores de búsqueda: () => [{t, n, sub, a}]
 };
 
-const esc3d = new Escenario($('#gl'));
-const atlas = new Atlas(esc3d, app);
+let esc3d, atlas;
+try {
+  esc3d = new Escenario($('#gl'));
+  atlas = new Atlas(esc3d, app);
+} catch (e) {   // sin WebGL no hay atlas: avisar en vez de dejar la pantalla de carga colgada
+  $('#carga .t').textContent = 'Este navegador no puede mostrar gráficos 3D';
+  $('#carga .d').textContent = 'Neuroatlas necesita WebGL. Activa la aceleración por hardware en la configuración del navegador o prueba con otro (Chrome, Firefox, Edge o Safari actualizados).';
+  $('#carga .b').hidden = true;
+  throw e;
+}
+esc3d.visible = () => !/^(curso|quiz)$/.test($('#app').dataset.modo);
 window.neuro = { app, atlas, esc: esc3d };
 
 // ───────────────────────────── navegación
@@ -115,9 +133,18 @@ addEventListener('keydown', e => {
   const enCampo = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
   if (e.key === '/' && !enCampo) { e.preventDefault(); abrirBusqueda(); }
   if (e.key === 'Escape' && !dlg.open && app.modo === 'atlas' && !enCampo) atlas.seleccionar(null);
+  // elementos de lista que actúan como botones (tabindex + data-tecla): Intro o espacio los activan
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches?.('[data-tecla]')) { e.preventDefault(); e.target.click(); }
 });
 
-addEventListener('hashchange', () => { const [modo, arg] = decodeURIComponent(location.hash.slice(1)).split('/'); if (modo) app.ir(modo, arg); });
+// «Atrás», «Adelante» o un enlace pegado: mientras se atiende, las rutas reemplazan en vez de apilar
+addEventListener('hashchange', async () => {
+  let hs = location.hash.slice(1); try { hs = decodeURIComponent(hs); } catch { /* tal cual */ }
+  const [modo, arg] = hs.split('/'); if (!modo) return;
+  app.desdeHistorial = true;
+  try { await app.ir(modo, arg); if (modo === 'atlas' && !arg && atlas.sel) atlas.seleccionar(null); }
+  finally { app.desdeHistorial = false; }
+});
 
 // ───────────────────────────── créditos
 $('#btn-acerca').addEventListener('click', async () => {
@@ -135,7 +162,7 @@ $('#btn-acerca').addEventListener('click', async () => {
     // módulos de contenido (para búsqueda y enlaces cruzados); si alguno falla, el atlas sigue funcionando
     for (const m of ['vias', 'micro', 'curso', 'quiz']) { try { await app.modulo(m); } catch (e) { console.warn('módulo no disponible:', m, e); } }
     const [modo, arg] = decodeURIComponent(location.hash.slice(1)).split('/');
-    await app.ir(modo || 'atlas', arg);
+    app.desdeHistorial = true; await app.ir(modo || 'atlas', arg); app.desdeHistorial = false;   // la dirección inicial se reemplaza, no se apila
     if (!modo || modo === 'atlas') { if (!arg) esc3d.encuadrar(atlas.cajaEncefalo, atlas.camIni.p.clone().sub(atlas.camIni.t), 1.15, 1); }
     c.classList.add('fuera'); setTimeout(() => { c.style.display = 'none'; }, 650);
   } catch (e) {

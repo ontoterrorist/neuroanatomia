@@ -3,7 +3,7 @@
 import { THREE } from './escena.js';
 import { PROTEINAS, CAT_PROT, MOLECULAS, CAT_MOL, NOMBRE_LIG } from '../data/moleculas.js';
 import { CELULAR, ESCENAS_CEL } from './micro-celular.js';
-import { $, $$, h, esc as E } from './ui.js';
+import { $, $$, h, esc as E, TECLA } from './ui.js';
 
 const CPK = { C: '#9aa1ab', H: '#f4f4f4', N: '#5b82f2', O: '#ea4d43', S: '#e9cb3f', P: '#f29a3f', CL: '#4fc462', F: '#86e08a', K: '#b07cf0', NA: '#f2c14e', MG: '#7fd68a', ZN: '#9fb0c8', CA: '#8fd0d0', SR: '#9fb0c8', W: '#9fb0c8' };
 const RAD = { H: 0.6, C: 1, N: 0.95, O: 0.92, S: 1.15, P: 1.15, CL: 1.15, F: 0.9 };
@@ -186,7 +186,7 @@ export async function crear(app, esc) {
     $('#hud-sup').innerHTML = ''; $('#etiquetas').innerHTML = ''; $('#herramientas').innerHTML = '';
     actual.entrar?.();
     pintarLista(); pintarFicha();
-    try { history.replaceState(null, '', '#micro/' + id); } catch { /* */ }
+    app.ruta('#micro/' + id);
   }
   function etiquetas() {
     const cont = $('#etiquetas'); const es = actual.etqs || [];
@@ -201,14 +201,14 @@ export async function crear(app, esc) {
   function pintarLista() {
     const izq = $('#izq'); izq.innerHTML = '';
     const lista = h('div', { class: 'desplaza' });
-    const fila = (id, n, sub) => h('div', { class: 'uni' + (actual?.id === id ? ' sel' : ''), onclick: () => abrir(id) }, h('span', null, h('div', { style: { fontWeight: 500 } }, n), sub ? h('div', { style: { fontSize: '11.5px', color: 'var(--texto3)' } }, sub) : null));
+    const fila = (id, n, sub) => h('div', { ...TECLA, class: 'uni' + (actual?.id === id ? ' sel' : ''), onclick: () => abrir(id) }, h('span', null, h('div', { style: { fontWeight: 500 } }, n), sub ? h('div', { style: { fontSize: '11.5px', color: 'var(--texto3)' } }, sub) : null));
     for (const g of CELULAR) lista.append(h('div', { class: 'temario' }, h('div', { class: 'sem' }, g.n), g.items.map(i => fila(i.id, i.n, i.sub))));
     lista.append(h('div', { class: 'temario' }, h('div', { class: 'sem' }, 'Proteínas · 10⁻⁸ m (estructuras reales)')));
     const arb = h('div', { class: 'arbol' });
-    CAT_PROT.forEach((c, k) => arb.append(h('details', { open: PROTEINAS.some(p => p.cat === k && 'p:' + p.id === actual?.id) || k === 0 }, h('summary', null, c, h('span', { class: 'n' }, PROTEINAS.filter(p => p.cat === k).length)), h('div', { class: 'hijos' }, PROTEINAS.filter(p => p.cat === k).map(p => h('div', { class: 'item' + (actual?.id === 'p:' + p.id ? ' sel' : ''), onclick: () => abrir('p:' + p.id) }, h('span', { class: 'nm' }, p.n)))))));
+    CAT_PROT.forEach((c, k) => arb.append(h('details', { open: PROTEINAS.some(p => p.cat === k && 'p:' + p.id === actual?.id) || k === 0 }, h('summary', null, c, h('span', { class: 'n' }, PROTEINAS.filter(p => p.cat === k).length)), h('div', { class: 'hijos' }, PROTEINAS.filter(p => p.cat === k).map(p => h('div', { ...TECLA, class: 'item' + (actual?.id === 'p:' + p.id ? ' sel' : ''), onclick: () => abrir('p:' + p.id) }, h('span', { class: 'nm' }, p.n)))))));
     lista.append(arb, h('div', { class: 'temario' }, h('div', { class: 'sem' }, 'Neurotransmisores y fármacos · 10⁻⁹ m')));
     const arb2 = h('div', { class: 'arbol' });
-    CAT_MOL.forEach((c, k) => arb2.append(h('details', { open: MOLECULAS.some(m => m.cat === k && 'q:' + m.id === actual?.id) }, h('summary', null, c, h('span', { class: 'n' }, MOLECULAS.filter(m => m.cat === k).length)), h('div', { class: 'hijos' }, MOLECULAS.filter(m => m.cat === k).map(m => h('div', { class: 'item' + (actual?.id === 'q:' + m.id ? ' sel' : ''), onclick: () => abrir('q:' + m.id) }, h('span', { class: 'nm' }, m.n)))))));
+    CAT_MOL.forEach((c, k) => arb2.append(h('details', { open: MOLECULAS.some(m => m.cat === k && 'q:' + m.id === actual?.id) }, h('summary', null, c, h('span', { class: 'n' }, MOLECULAS.filter(m => m.cat === k).length)), h('div', { class: 'hijos' }, MOLECULAS.filter(m => m.cat === k).map(m => h('div', { ...TECLA, class: 'item' + (actual?.id === 'q:' + m.id ? ' sel' : ''), onclick: () => abrir('q:' + m.id) }, h('span', { class: 'nm' }, m.n)))))));
     lista.append(arb2);
     izq.append(h('div', { class: 'cab' }, h('h2', null, 'Microescala'), h('p', null, 'Del circuito (milímetros) a la molécula (ángstroms). La regla inferior indica la escala.')), lista);
     $('#izq .sel')?.scrollIntoView({ block: 'nearest' });

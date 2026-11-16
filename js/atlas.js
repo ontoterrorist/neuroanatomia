@@ -7,7 +7,7 @@ import { B } from '../data/estructuras-b.js';
 import { CUERPO } from '../data/cuerpo.js';
 import { NERVIOS } from '../data/nervios.js';
 import { ARBOL, CAPAS, VISTAS, NATURAL, REGIONES, SISTEMAS, ARTERIAS, LADO } from '../data/grupos.js';
-import { $, $$, h, esc, sinAcentos, ICO } from './ui.js';
+import { $, $$, h, esc, sinAcentos, ICO, TECLA } from './ui.js';
 
 const ORO = new THREE.Color('#ffb640');
 const SIN_HEMI = new Set(['piel', 'visceras', 'esqueleto', 'columna', 'medula', 'nervios', 'autonomo']);
@@ -172,6 +172,8 @@ export class Atlas {
       this._pintarCapas();
     }
     this.actualizar(); this.pintarFicha(); this._marcarArbol();
+    // la dirección lleva la estructura elegida: el enlace se puede compartir (se reemplaza para no llenar el historial)
+    if (this.app.modo === 'atlas' && $('#app').dataset.modo === 'atlas') this.app.ruta?.('#atlas' + (base ? '/' + base : ''), true);
     if (base && o.volar) this.enfocar(base);
     if (base) this.app.abrirFicha?.();
   }
@@ -261,7 +263,7 @@ export class Atlas {
   }
   _fila(base) {
     const i = this.cat[base];
-    return h('div', { class: 'item', 'data-b': base, 'data-t': sinAcentos(i.n + ' ' + (i.la || '')), onclick: (e) => { if (e.target.closest('.ojo')) return; this.seleccionar(base, { revelar: true, volar: true }); } },
+    return h('div', { ...TECLA, class: 'item', 'data-b': base, 'data-t': sinAcentos(i.n + ' ' + (i.la || '')), onclick: (e) => { if (e.target.closest('.ojo')) return; this.seleccionar(base, { revelar: true, volar: true }); } },
       h('span', { class: 'pt' }), h('span', { class: 'nm' }, i.n),
       h('button', { class: 'ojo', title: 'Mostrar u ocultar', onclick: () => { this.ocultos.has(base) ? this.ocultos.delete(base) : this.ocultos.add(base); this.actualizar(); this._marcarArbol(); } }, '◉'));
   }

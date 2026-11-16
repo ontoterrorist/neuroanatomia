@@ -18,6 +18,9 @@ export function h(tag, attrs, ...kids) {
   return e;
 }
 
+/** Atributos para que un elemento de lista se pueda enfocar con Tab y activar con Intro o espacio (ver main.js). */
+export const TECLA = { tabindex: 0, role: 'button', 'data-tecla': '' };
+
 export const sinAcentos = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
 /** Almacén local tolerante a fallos. */

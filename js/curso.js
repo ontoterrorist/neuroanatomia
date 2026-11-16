@@ -2,7 +2,7 @@
 import { SEMESTRE_1 } from '../data/curso-1.js';
 import { SEMESTRE_2 } from '../data/curso-2.js';
 import { PREGUNTAS } from '../data/preguntas.js';
-import { $, $$, h, mem } from './ui.js';
+import { $, $$, h, mem, TECLA } from './ui.js';
 import { widgetPregunta } from './quiz.js';
 
 export const CURSO = [SEMESTRE_1, SEMESTRE_2];
@@ -20,10 +20,10 @@ export async function crear(app, esc, atlas) {
     let k = 0;
     CURSO.forEach((s) => {
       lista.append(h('div', { class: 'sem' }, `${s.n} · ${s.sub}`));
-      for (const u of s.unidades) { k++; lista.append(h('div', { class: 'uni' + (actual === u.id ? ' sel' : ''), onclick: () => abrir(u.id) }, h('span', { class: 'k' }, String(k).padStart(2, '0')), h('span', null, u.n), p.hechas[u.id] ? h('span', { class: 'ok', title: 'Completada' }, '✓') : null)); }
+      for (const u of s.unidades) { k++; lista.append(h('div', { ...TECLA, class: 'uni' + (actual === u.id ? ' sel' : ''), onclick: () => abrir(u.id) }, h('span', { class: 'k' }, String(k).padStart(2, '0')), h('span', null, u.n), p.hechas[u.id] ? h('span', { class: 'ok', title: 'Completada' }, '✓') : null)); }
     });
     izq.append(h('div', { class: 'cab' }, h('h2', null, 'Curso'), h('p', null, `${hechas} de ${UNIDADES.length} unidades completadas`), h('div', { class: 'progreso' }, h('i', { style: { width: (hechas / UNIDADES.length * 100) + '%' } }))),
-      h('div', { class: 'uni' + (!actual ? ' sel' : ''), style: { padding: '9px 14px', cursor: 'pointer' }, onclick: () => abrir(null) }, 'Presentación y plan de estudio'), lista);
+      h('div', { ...TECLA, class: 'uni' + (!actual ? ' sel' : ''), style: { padding: '9px 14px', cursor: 'pointer' }, onclick: () => abrir(null) }, 'Presentación y plan de estudio'), lista);
     $('#izq .uni.sel')?.scrollIntoView({ block: 'nearest' });
   }
 
@@ -67,7 +67,7 @@ export async function crear(app, esc, atlas) {
     if (u) { const p = prog(); p.ultima = u.id; mem.set('curso', p); }
     temario();
     $('#der').innerHTML = '';
-    try { history.replaceState(null, '', '#curso' + (u ? '/' + u.id : '')); } catch { /* */ }
+    app.ruta('#curso' + (u ? '/' + u.id : ''));
   }
 
   $('#pagina').addEventListener('click', (e) => { const b = e.target.closest('.ver3d'); if (b?.dataset.a) app.accion(b.dataset.a); });
