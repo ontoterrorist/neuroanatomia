@@ -11,7 +11,7 @@ Atlas interactivo en 3D para aprender **neuroanatomía funcional**, de la anatom
 | **Atlas 3D** | 332 estructuras con ficha (descripción, función, conexiones, irrigación y clínica): encéfalo del atlas humano Allen (141 estructuras por hemisferio), médula espinal segmento a segmento, 12 pares craneales, raíces, plexos y nervios periféricos, cadena simpática, arterias cerebrales, cráneo, columna, esqueleto y vísceras. Capas con tres estados, plano de corte, separación de hemisferios, vista explosionada y cuatro códigos de color (natural, regiones, función, irrigación). |
 | **Vías** | 22 vías y circuitos animados sobre el modelo, con recorrido paso a paso: corticoespinal, lemnisco medial, espinotalámica, visual, auditiva, ganglios basales, cerebelo, Papez, dopaminérgicas, LCR, reflejos… |
 | **Microescala** | Columna cortical, corteza cerebelosa y sección medular con tractos; neurona con simulador de Hodgkin-Huxley; glía y barrera hematoencefálica; cuatro sinapsis animadas; 20 proteínas con sus estructuras experimentales del PDB (canales, bombas, receptores, SNARE) y 31 neurotransmisores y fármacos en 3D. |
-| **Curso** | 34 unidades en dos semestres (estructura y función), enlazadas con el modelo. |
+| **Curso** | Unidad 0 de neurobiología celular (16 lecciones) y 34 unidades en dos semestres (estructura y función), enlazadas con el modelo. |
 | **Evaluación** | 107 preguntas, 18 casos clínicos de localización e identificación de estructuras sobre el modelo 3D. |
 
 ## Desarrollo

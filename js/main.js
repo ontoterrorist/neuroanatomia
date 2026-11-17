@@ -65,13 +65,12 @@ const app = {
   relacionados(base) {
     const vs = this.mods.vias?.de(base) || [], ls = this.leccionesDe?.(base) || [];
     if (!vs.length && !ls.length) return null;
-    const U = this.mods.curso?.UNIDADES || [];
     return [vs.length ? [h('h3', null, 'Vías en las que participa'), h('div', { class: 'rel' }, vs.map(v => h('button', { onclick: () => this.ir('vias', v.id) }, v.n, h('small', null, v.sub))))] : null,
-      ls.length ? [h('h3', null, 'Lecciones del curso'), h('div', { class: 'rel' }, ls.map(u => h('button', { onclick: () => this.ir('curso', u.id) }, `Unidad ${U.findIndex(x => x.id === u.id) + 1}. ${u.n}`)))] : null];
+      ls.length ? [h('h3', null, 'Lecciones del curso'), h('div', { class: 'rel' }, ls.map(u => h('button', { onclick: () => this.ir('curso', u.id) }, `${u.rot}. ${u.n}`)))] : null];
   },
   leccionesDeVia(id) {
     const U = this.mods.curso?.UNIDADES || [], ls = U.filter(u => u.html.includes('"v:' + id + '"'));
-    return ls.length ? [h('h3', null, 'Lecciones del curso'), h('div', { class: 'rel' }, ls.map(u => h('button', { onclick: () => this.ir('curso', u.id) }, `Unidad ${U.findIndex(x => x.id === u.id) + 1}. ${u.n}`)))] : null;
+    return ls.length ? [h('h3', null, 'Lecciones del curso'), h('div', { class: 'rel' }, ls.map(u => h('button', { onclick: () => this.ir('curso', u.id) }, `${u.rot}. ${u.n}`)))] : null;
   },
   indices: [],     // proveedores de búsqueda: () => [{t, n, sub, a}]
 };

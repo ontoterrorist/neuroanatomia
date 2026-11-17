@@ -1,10 +1,7 @@
 // Curso · Semestre I: organización, estructura y bases celulares del sistema nervioso.
-// v(acción, texto) crea un enlace «ver en 3D». Acciones: e:estructura · v:vía · m:microescala · vista:nombre
-export const v = (a, t) => `<button class="ver3d" data-a="${a}">◈ ${t}</button>`;
-const clave = (t, c) => `<div class="clave"><h4>${t}</h4>${c}</div>`;
-const clin = (c) => `<div class="clave clin"><h4>Correlación clínica</h4>${c}</div>`;
-const tabla = (cab, filas) => `<table class="t"><tr>${cab.map(c => `<th>${c}</th>`).join('')}</tr>${filas.map(f => `<tr>${f.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
-export { clave, clin, tabla };
+// Las ayudas v(), clave(), clin() y tabla() viven en ayudas-curso.js; se reexportan para no romper imports existentes.
+import { v, clave, clin, tabla } from './ayudas-curso.js';
+export { v, clave, clin, tabla };
 
 export const SEMESTRE_1 = { n: 'Semestre I', sub: 'Estructura: de la célula al encéfalo', unidades: [
   { id: 'u01', n: 'Organización general y terminología', baj: 'El mapa antes del territorio: divisiones, ejes y vocabulario.',
