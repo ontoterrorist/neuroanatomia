@@ -1,4 +1,4 @@
-// Unidad 0 · lecciones 0.14 a 0.16. Cada afirmación está respaldada en docs/unidad-0/fuentes.md.
+// Semestre 0 · unidades 0.14 a 0.16. Cada afirmación está respaldada en docs/unidad-0/fuentes.md.
 import { v, clave, clin, tabla } from './ayudas-curso.js';
 
 const NSO = 'Neuroscience Online (Departamento de Neurobiología y Anatomía, Universidad de Texas en Houston)';
@@ -15,7 +15,7 @@ export const LECCIONES_0_D = [
 <li><strong>Potenciación postetánica (PTP).</strong> Facilitación extrema: una mejora de minutos tras una breve salva de impulsos.</li>
 </ul>
 <h3>Heterosináptica: la actividad de otra vía</h3>
-<p>Una neurona moduladora hace una sinapsis axoaxónica sobre el terminal presináptico. Si activa receptores metabotrópicos que fosforilan los canales de Ca²⁺ para que se abran con menos facilidad, entra menos Ca²⁺, se libera menos transmisor y el EPSP baja: es la <strong>inhibición presináptica</strong>, muy destacada en la médula espinal. Si el segundo mensajero hace que entre más Ca²⁺, es la <strong>facilitación presináptica</strong>. Es el mismo principio de las lecciones 0.9 y 0.11 aplicado al terminal.</p>
+<p>Una neurona moduladora hace una sinapsis axoaxónica sobre el terminal presináptico. Si activa receptores metabotrópicos que fosforilan los canales de Ca²⁺ para que se abran con menos facilidad, entra menos Ca²⁺, se libera menos transmisor y el EPSP baja: es la <strong>inhibición presináptica</strong>, muy destacada en la médula espinal. Si el segundo mensajero hace que entre más Ca²⁺, es la <strong>facilitación presináptica</strong>. Es el mismo principio de las unidades 0.9 y 0.11 aplicado al terminal.</p>
 <h3>Potenciación a largo plazo (LTP)</h3>
 <p>Tras una tetanización, la PTP se apaga en minutos y queda una mejora muy duradera del EPSP: la LTP, con componentes homo y heterosinápticos. Para la sinapsis CA3-CA1 del hipocampo, NSO explica el mecanismo con los dos receptores de glutamato de la espina de CA1:</p>
 <ol>
@@ -69,7 +69,7 @@ ${tabla(['Toxina', 'Diana'], [
   ['ω-conotoxina, ω-Aga (araña)', 'Algunos canales de Ca²⁺ dependientes de voltaje'],
   ['Curare, α-bungarotoxina', 'Receptor nicotínico de ACh'],
   ['Picrotoxina, estricnina', 'Receptor GABA<sub>A</sub>, receptor de glicina'],
-  ['Botulínica, tetánica', 'Proteínas de la vesícula (lección 0.9)'],
+  ['Botulínica, tetánica', 'Proteínas de la vesícula (unidad 0.9)'],
 ])}
 <p>${v('m:q:tetrodotoxin', 'Tetrodotoxina')} ${v('m:q:strychnine', 'Estricnina')}</p>
 ${clave('Cómo se sabe', `<p>El caso de Huntington muestra el método: ligamiento en una familia muy grande, con muchas recombinaciones, para acotar la región. Lo anterior es un resumen de NSO, <em>sin autores ni años</em>; de la excitotoxicidad solo leí el resumen de Lau y Tymianski. Los alcances de «no hay terapia eficaz» y de ELA o Parkinson son los de sus autores, no míos.</p>`)}

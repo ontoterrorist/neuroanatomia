@@ -6,13 +6,13 @@ import { $, $$, h, esc, sinAcentos, mem } from './ui.js';
 const app = {
   modo: 'atlas', mods: {},
   async ir(modo, arg) {
-    if (!['atlas', 'vias', 'micro', 'curso', 'quiz'].includes(modo)) modo = 'atlas';
+    if (!['atlas', 'vias', 'micro', 'imagen', 'curso', 'quiz'].includes(modo)) modo = 'atlas';
     this.mods[this.modo]?.salir?.();
     this.modo = modo;
     $('#app').dataset.modo = modo;
     $$('#modos button').forEach(b => b.classList.toggle('activo', b.dataset.modo === modo));
     $('#app').classList.remove('abre-izq', 'abre-der');
-    $('#pagina').hidden = !(modo === 'curso' || modo === 'quiz');
+    $('#pagina').hidden = !(modo === 'curso' || modo === 'quiz' || modo === 'imagen');
     $('#pista').hidden = true; $('#etiquetas').innerHTML = ''; $('#hud-sup').innerHTML = ''; $$('#lienzo .flot').forEach(x => x.remove());
     if (modo === 'atlas') {
       esc3d.usar('atlas', atlas.scene, atlas.modo, 0.01, atlas.camIni);
@@ -25,7 +25,7 @@ const app = {
       if (this.modo !== modo) return;
       await m.entrar(arg);
     }
-    // vías, micro y curso fijan su propia dirección (con la vía, escena o unidad abierta)
+    // vías, micro, imagen y curso fijan su propia dirección (con la vía, escena o unidad abierta)
     if (modo !== 'atlas' && !location.hash.startsWith('#' + modo)) this.ruta('#' + modo + (typeof arg === 'string' ? '/' + arg : ''));
   },
   /** Cambia la dirección: una entrada nueva en el historial (para que funcione «Atrás»), o la reemplaza. */
@@ -36,7 +36,7 @@ const app = {
   },
   async modulo(modo) {
     if (!this.mods[modo]) {
-      const f = { vias: './vias.js', micro: './micro.js', curso: './curso.js', quiz: './quiz.js' }[modo];
+      const f = { vias: './vias.js', micro: './micro.js', imagen: './imagen.js', curso: './curso.js', quiz: './quiz.js' }[modo];
       const M = await import(f);
       this.mods[modo] = await M.crear(app, esc3d, atlas);
     }
@@ -51,6 +51,7 @@ const app = {
     else if (tipo === 'v') this.ir('vias', id);
     else if (tipo === 'm') this.ir('micro', id + (extra ? ':' + extra : ''));
     else if (tipo === 'l') this.ir('curso', id);
+    else if (tipo === 'i') this.ir('imagen', id);
     else if (tipo === 'vista') { this.ir('atlas').then(() => atlas.vista(id)); }
   },
   /** Botón hacia la escena microscópica que corresponde a una estructura. */
@@ -85,7 +86,7 @@ try {
   $('#carga .b').hidden = true;
   throw e;
 }
-esc3d.visible = () => !/^(curso|quiz)$/.test($('#app').dataset.modo);
+esc3d.visible = () => !/^(curso|quiz|imagen)$/.test($('#app').dataset.modo);
 window.neuro = { app, atlas, esc: esc3d };
 
 // ───────────────────────────── navegación
@@ -159,7 +160,7 @@ $('#btn-acerca').addEventListener('click', async () => {
     esc3d.usar('atlas', atlas.scene, atlas.modo, 0.01, atlas.camIni);
     await atlas.cargar((p, n) => { $('.b i', c).style.width = (p * 100).toFixed(0) + '%'; $('.d', c).textContent = n; });
     // módulos de contenido (para búsqueda y enlaces cruzados); si alguno falla, el atlas sigue funcionando
-    for (const m of ['vias', 'micro', 'curso', 'quiz']) { try { await app.modulo(m); } catch (e) { console.warn('módulo no disponible:', m, e); } }
+    for (const m of ['vias', 'micro', 'imagen', 'curso', 'quiz']) { try { await app.modulo(m); } catch (e) { console.warn('módulo no disponible:', m, e); } }
     const [modo, arg] = decodeURIComponent(location.hash.slice(1)).split('/');
     app.desdeHistorial = true; await app.ir(modo || 'atlas', arg); app.desdeHistorial = false;   // la dirección inicial se reemplaza, no se apila
     if (!modo || modo === 'atlas') { if (!arg) esc3d.encuadrar(atlas.cajaEncefalo, atlas.camIni.p.clone().sub(atlas.camIni.t), 1.15, 1); }

@@ -1,4 +1,4 @@
-// Preguntas de la Unidad 0. Formato igual que preguntas.js: [unidad, enunciado, [correcta, 3 distractores], explicación].
+// Preguntas del Semestre 0. Formato igual que preguntas.js: [unidad, enunciado, [correcta, 3 distractores], explicación].
 export const PREGUNTAS_0 = [
   // ───── 0.1 Las células del sistema nervioso
   ['u0-01', 'Según Neuroscience Online, ¿qué región de la neurona es, en muchos casos, el sitio donde se origina el potencial de acción?', ['El segmento inicial, entre el cono axónico y el comienzo de la mielina', 'El centro del soma, junto al nucléolo', 'La punta de las espinas dendríticas', 'El terminal presináptico'], 'El segmento inicial (trigger zone) es el lugar de iniciación del impulso en muchas neuronas. El cono axónico es la zona sin ribosomas de la que sale el axón.'],

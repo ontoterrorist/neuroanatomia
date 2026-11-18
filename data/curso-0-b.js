@@ -1,4 +1,4 @@
-// Unidad 0 · lecciones 0.6 a 0.10. Cada afirmación está respaldada en docs/unidad-0/fuentes.md.
+// Semestre 0 · unidades 0.6 a 0.10. Cada afirmación está respaldada en docs/unidad-0/fuentes.md.
 import { v, clave, clin, tabla } from './ayudas-curso.js';
 
 const NSO = 'Neuroscience Online (Departamento de Neurobiología y Anatomía, Universidad de Texas en Houston)';
@@ -25,7 +25,7 @@ ${tabla(['Fase', 'Qué ocurre'], [
 <li><strong>Relativa.</strong> Otro impulso es posible, pero con más despolarización, en parte por la hiperpolarización posterior. Ejemplo de NSO: un estímulo de 15 mV lleva de −60 a −45 mV (umbral); si llega durante la hiperpolarización posterior se queda por debajo.</li>
 </ul>
 <h3>Propagación</h3>
-<p>La región activa despolariza a su vecina por corriente local, y esa vecina dispara su propio impulso: es la mecha de pólvora que prende a lo largo del cable. Un impulso no cambia las concentraciones: lo que entra y sale es insignificante frente a lo que hay, y las bombas hacen el mantenimiento a largo plazo. La velocidad varía de 100 m/s a menos de 0,1 m/s. En axones mielinizados, el potencial se propaga pasivamente por el internodo, decrece y se regenera en el nodo siguiente (lección 0.3).</p>
+<p>La región activa despolariza a su vecina por corriente local, y esa vecina dispara su propio impulso: es la mecha de pólvora que prende a lo largo del cable. Un impulso no cambia las concentraciones: lo que entra y sale es insignificante frente a lo que hay, y las bombas hacen el mantenimiento a largo plazo. La velocidad varía de 100 m/s a menos de 0,1 m/s. En axones mielinizados, el potencial se propaga pasivamente por el internodo, decrece y se regenera en el nodo siguiente (unidad 0.3).</p>
 ${clave('Cómo se sabe', `<p>Hodgkin y Huxley usaron la fijación de voltaje: un amplificador mantiene el potencial en un valor deseado y mide la corriente necesaria, que informa de la permeabilidad. Fijaron el potencial en distintos niveles y vieron que, cuanto más despolarizaban, mayor era la conductancia de Na⁺ (y que decaía sola: inactivación), mientras que la de K⁺ subía más lento. Su descripción cuantitativa es Hodgkin y Huxley (1952), <em>J Physiol</em> 117:500. Antes, Hodgkin y Katz (1949) publicaron «El efecto de los iones sodio sobre la actividad eléctrica del axón gigante de calamar». NSO muestra un experimento del mismo tipo, sin atribuirlo: al reducir el Na⁺ externo los impulsos se achican y siguen la recta de Nernst para el Na⁺. <em>De los dos artículos solo pude verificar la cita, no leer el texto.</em></p>`)}
 <p>${v('l:u04', 'Potencial de acción y conducción en la unidad 4')}</p>
 <p><small>Fuentes: ${NSO}, caps. 1 (§1.3–1.4), 2 (§2.1–2.6, §2.9) y 3 (§3.1–3.3). Hodgkin y Huxley 1952; Hodgkin y Katz 1949 (solo cita verificada).</small></p>` },
@@ -44,7 +44,7 @@ ${tabla(['Postura', 'Qué sostiene'], [
 ])}
 <p>Bonvento y colaboradores (2005) titulan su revisión «una hipótesis debatida pero aún valiosa para la imagen cerebral» (solo pude verificar el título). El desacuerdo no es una anécdota: depende del sistema experimental con que se pruebe.</p>
 ${clave('Cómo se sabe', `<p>El presupuesto energético <strong>no es una medición directa</strong>: es un cálculo que suma el costo de cada proceso con datos de roedor, y sus cifras (47, 34, 13, 3 %) cambian si cambian los datos de entrada. Lo del lactato se discute porque se estudió en cultivos de astrocitos, cultivos de neuronas, sinaptosomas y cerebro entero, con resultados que no coinciden. Antes de aceptar una cifra, pregunta: ¿medida o calculada?, ¿en qué sistema, en qué especie?</p>`)}
-<p>${v('l:u0-03', 'Las bombas, en la lección 0.3')}</p>
+<p>${v('l:u0-03', 'Las bombas, en la unidad 0.3')}</p>
 <p><small>Fuentes (solo resúmenes): Attwell y Laughlin 2001, <em>J Cereb Blood Flow Metab</em> 21:1133. Pellerin y Magistretti 1994, <em>PNAS</em> 91:10625. Dienel 2012, <em>JCBFM</em> 32:1107. Magistretti y Allaman 2018, <em>Nat Rev Neurosci</em> 19:235. Bonvento et al. 2005, <em>JCBFM</em> 25:1394 (solo título).</small></p>` },
 
   { id: 'u0-08', n: 'Sinapsis eléctricas y químicas; la unión neuromuscular', baj: 'La sinapsis mejor conocida: placa motora, ACh y potencial de placa.',
@@ -65,7 +65,7 @@ ${tabla(['', 'Química', 'Eléctrica'], [
 <li>El impulso de la motoneurona invade el terminal y libera acetilcolina (ACh).</li>
 <li>La ACh difunde por la hendidura y se une a su receptor, un canal ionotrópico: el sitio de unión es parte del canal y suelen hacer falta dos moléculas de ACh. La unión abre un poro permeable por igual a Na⁺ y K⁺.</li>
 <li>La membrana se despolariza: es el <strong>potencial de placa</strong> (EPP), un EPSP. Dura unos 10 ms.</li>
-<li>Si alcanza el umbral, que es lo normal, dispara un impulso en la fibra muscular, con el mismo mecanismo de Na⁺ y K⁺ de la lección 0.6, y de ahí la contracción.</li>
+<li>Si alcanza el umbral, que es lo normal, dispara un impulso en la fibra muscular, con el mismo mecanismo de Na⁺ y K⁺ de la unidad 0.6, y de ahí la contracción.</li>
 </ol>
 <p>El EPP mide unos 50 mV y bastan unos 30 mV para llegar al umbral: los 20 mV sobrantes son el <strong>factor de seguridad</strong>. El EPP se esparce con decremento, de forma pasiva. Su duración la fijan dos procesos: la difusión de la ACh y la <strong>acetilcolinesterasa</strong> (AChE), que la hidroliza; una sola molécula de AChE degrada 600 000 moléculas por minuto. ${v('m:p:4EY7', 'Acetilcolinesterasa (PDB 4EY7)')}</p>
 <h3>El potencial de inversión</h3>
@@ -107,13 +107,13 @@ ${clave('Cómo se sabe', `<p>El análisis cuántico es de Katz y su grupo; el ar
     obj: ['Distinguir EPSP e IPSP y su mecanismo iónico', 'Explicar la sumación temporal y la espacial con las propiedades pasivas', 'Describir una respuesta sináptica metabotrópica lenta', 'Seguir el reflejo patelar como circuito de ejemplo'],
     rel: [],
     html: `<h3>Un circuito de ejemplo</h3>
-<p>El golpe del martillo en el tendón rotuliano estira el músculo extensor y sus husos neuromusculares. Los impulsos viajan por fibras 1A cuyos somas están en el ganglio de la raíz dorsal y hacen sinapsis con dos células: la motoneurona extensora del asta ventral (que contrae el músculo por la placa motora de la lección 0.8) y una interneurona inhibidora que inhibe a la motoneurona flexora. Es el <strong>reflejo de estiramiento monosináptico</strong>: un solo relevo excitador central.</p>
+<p>El golpe del martillo en el tendón rotuliano estira el músculo extensor y sus husos neuromusculares. Los impulsos viajan por fibras 1A cuyos somas están en el ganglio de la raíz dorsal y hacen sinapsis con dos células: la motoneurona extensora del asta ventral (que contrae el músculo por la placa motora de la unidad 0.8) y una interneurona inhibidora que inhibe a la motoneurona flexora. Es el <strong>reflejo de estiramiento monosináptico</strong>: un solo relevo excitador central.</p>
 <h3>EPSP: lo parecido y lo distinto</h3>
 <p>El mecanismo es esencialmente el mismo de la placa: el transmisor se une a un receptor ionotrópico y sube a la vez la permeabilidad al Na⁺ y al K⁺; la liberación también depende del Ca²⁺. Hay dos diferencias: el transmisor es <strong>glutamato</strong>, no ACh (en el SNC hay 50 o más transmisores, agrupables en acetilcolina, monoaminas, péptidos y aminoácidos), y la amplitud es de solo ~1 mV, frente a los 50 mV de la placa. ${v('m:s:glu', 'Sinapsis glutamatérgica')} ${v('m:p:3KG2', 'Receptor AMPA (3KG2)')}</p>
 <h3>Sumación</h3>
 <p>Un EPSP de 1 mV no basta para llegar al umbral. Lo logra la convergencia: el estiramiento activa muchos receptores (<strong>reclutamiento</strong>) y cada uno dispara trenes de impulsos.</p>
 <ul>
-<li><strong>Temporal.</strong> Dos impulsos seguidos dan EPSP que se suman sobre el flanco del primero (≈2 mV). Es pasiva: la membrana almacena carga, y la ventana depende de la constante de tiempo (lección 0.5).</li>
+<li><strong>Temporal.</strong> Dos impulsos seguidos dan EPSP que se suman sobre el flanco del primero (≈2 mV). Es pasiva: la membrana almacena carga, y la ventana depende de la constante de tiempo (unidad 0.5).</li>
 <li><strong>Espacial.</strong> Dos neuronas activas a la vez dan un EPSP doble. Depende de la constante de espacio: la carga se propaga de una región a otra.</li>
 </ul>
 <h3>IPSP</h3>

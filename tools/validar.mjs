@@ -8,12 +8,15 @@ const imp = (f) => import('file://' + path.join(R, f).replace(/\\/g, '/'));
 const [c0, c1, c2, pr, vi, mo, mi, ea, eb, cu, ne] = await Promise.all(['data/curso-0.js', 'data/curso-1.js', 'data/curso-2.js', 'data/preguntas.js', 'data/vias.js', 'data/moleculas.js', 'data/micro.js', 'data/estructuras-a.js', 'data/estructuras-b.js', 'data/cuerpo.js', 'data/nervios.js'].map(imp));
 const cat = { ...ea.A, ...eb.B, ...cu.CUERPO, ...ne.NERVIOS };
 const man = Object.assign({}, ...['encefalo', 'cuerpo', 'nervios'].map(f => JSON.parse(fs.readFileSync(path.join(R, 'assets', f + '.json'), 'utf8'))));
-const U0 = c0.UNIDAD_0.unidades, U = [...U0, ...c1.SEMESTRE_1.unidades, ...c2.SEMESTRE_2.unidades], ids = new Set(U.map(u => u.id));
+const U0 = c0.SEMESTRE_0.unidades, U = [...U0, ...c1.SEMESTRE_1.unidades, ...c2.SEMESTRE_2.unidades], ids = new Set(U.map(u => u.id));
 const vias = new Set(vi.VIAS.map(x => x.id));
 const micro = new Set(['c:corteza', 'c:cerebelo', 'c:medula', 'n:neurona', 'n:glia', ...Object.keys(mi.SINAPSIS).map(k => 's:' + k), ...mo.PROTEINAS.map(x => 'p:' + x.id), ...mo.MOLECULAS.map(x => 'q:' + x.id)]);
+const { HERRAMIENTAS } = await imp('js/imagen.js');
+const imagenes = new Set(HERRAMIENTAS.map(x => x.id));
 const vistas = new Set(['encefalo', 'interior', 'cabeza', 'vasos', 'neuroeje', 'cuerpo']);
 let bad = 0; const err = (...a) => { console.log('  ✗', ...a); bad++; };
-const enlace = (a, donde) => { const i = a.indexOf(':'), t = a.slice(0, i), id = a.slice(i + 1); const ok = t === 'e' ? !!cat[id] && (man[id] || man[id + '_L']) : t === 'v' ? vias.has(id) : t === 'm' ? micro.has(id) : t === 'vista' ? vistas.has(id) : t === 'l' ? ids.has(id) : false; if (!ok) err('enlace', donde, a); };
+const enlace = (a, donde) => { const i = a.indexOf(':'), t = a.slice(0, i), id = a.slice(i + 1); const ok = t === 'e' ? !!cat[id] && (man[id] || man[id + '_L']) : t === 'v' ? vias.has(id) : t === 'm' ? micro.has(id) : t === 'vista' ? vistas.has(id) : t === 'l' ? ids.has(id) : t === 'i' ? imagenes.has(id) : false; if (!ok) err('enlace', donde, a); };
+if (!fs.existsSync(path.join(R, 'assets', 'volumen.bin'))) err('falta assets/volumen.bin (node tools/build-volumen.mjs)');
 let palabras = 0;
 const contar = (html) => html.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
 for (const u of U) {
@@ -21,7 +24,7 @@ for (const u of U) {
   for (const r of u.rel || []) if (!cat[r]) err('rel', u.id, r);
   palabras += contar(u.html);
 }
-// Unidad 0: formato fijado en docs/unidad-0/diseno.md (3-4 objetivos, 500-700 palabras, un recuadro «Cómo se sabe», un botón v(), id u0-NN).
+// Semestre 0: formato fijado en docs/unidad-0/diseno.md (3-4 objetivos, 500-700 palabras, un recuadro «Cómo se sabe», un botón v(), id u0-NN).
 const avisos = [];
 U0.forEach((u, i) => {
   const w = contar(u.html);
@@ -43,8 +46,8 @@ for (const m of mo.MOLECULAS) if (!mj[m.id]) err('molécula sin datos', m.id);
 const w = (o) => JSON.stringify(o).split(/\s+/).length;
 console.log(`unidades ${U.length} · palabras del curso ${palabras} · preguntas ${pr.PREGUNTAS.length} · casos ${pr.CASOS.length} · vías ${vi.VIAS.length} · fichas ${Object.keys(cat).length} · proteínas ${mo.PROTEINAS.length} · moléculas ${mo.MOLECULAS.length}`);
 console.log(`palabras: fichas ${w(cat)} · vías ${w(vi.VIAS)} · moléculas ${w(mo.PROTEINAS) + w(mo.MOLECULAS)} · microescala ${w(mi.SINAPSIS) + w(mi.CIRCUITOS) + w(mi.PARTES)}`);
-for (const u of U0) if ((porU[u.id] || 0) < 4) err('Unidad 0 con menos de 4 preguntas', u.id, porU[u.id] || 0);
-console.log('Unidad 0 fuera de 500-700 palabras:', avisos.join(' · ') || 'ninguna');
+for (const u of U0) if ((porU[u.id] || 0) < 4) err('Semestre 0: unidad con menos de 4 preguntas', u.id, porU[u.id] || 0);
+console.log('Semestre 0 fuera de 500-700 palabras:', avisos.join(' · ') || 'ninguna');
 console.log('unidades sin preguntas:', U.filter(u => !porU[u.id]).map(u => u.id).join(' ') || 'ninguna');
 console.log(bad ? `${bad} errores` : 'sin errores');
 process.exit(bad ? 1 : 0);

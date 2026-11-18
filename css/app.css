@@ -155,7 +155,7 @@ table.t th { color: var(--texto3); font-weight: 600; font-size: 11px; letter-spa
 
 /* ───── páginas (curso, evaluación) */
 #pagina { grid-area: lienzo; grid-column: 2 / 4; overflow-y: auto; background: var(--tinta); z-index: 15; }
-#app[data-modo="curso"] #lienzo, #app[data-modo="curso"] #der, #app[data-modo="quiz"] #lienzo, #app[data-modo="quiz"] #der { visibility: hidden; }
+#app[data-modo="curso"] #lienzo, #app[data-modo="curso"] #der, #app[data-modo="quiz"] #lienzo, #app[data-modo="quiz"] #der, #app[data-modo="imagen"] #lienzo, #app[data-modo="imagen"] #der { visibility: hidden; }
 .hoja { max-width: 780px; margin: 0 auto; padding: 34px 28px 90px; }
 .hoja .sobre { color: var(--oro); font: 600 11.5px var(--sans); letter-spacing: .1em; text-transform: uppercase; }
 .hoja h1 { font: 600 32px/1.15 var(--serif); margin: 6px 0 10px; text-wrap: balance; }
@@ -233,8 +233,43 @@ dialog::backdrop { background: rgba(4, 6, 9, .6); backdrop-filter: blur(3px); }
   #izq { left: 0; transform: translateX(-102%); } #der { right: 0; transform: translateX(102%); }
   #app.abre-izq #izq, #app.abre-der #der { transform: none; }
   #pagina { grid-column: 1; } .hoja { padding: 22px 16px 80px; } .hoja h1 { font-size: 26px; }
-  #app[data-modo="curso"] #der, #app[data-modo="quiz"] #der { visibility: visible; }
+  #app[data-modo="curso"] #der, #app[data-modo="quiz"] #der, #app[data-modo="imagen"] #der { visibility: visible; }
   .hb .tx { display: none; }
   #escala { bottom: 64px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* ───────────── neuroimagen */
+.hoja.ancha { max-width: 1120px; }
+.sim { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 22px; align-items: start; margin: 8px 0 14px; }
+.sim .visor { min-width: 0; }
+.sim .mandos h3:first-child { margin-top: 0; }
+.mandos .seg { display: flex; flex-wrap: wrap; border: 1px solid var(--linea2); border-radius: 9px; overflow: hidden; margin: 4px 0 8px; }
+.mandos .seg button { flex: 1 1 auto; border-right: 1px solid var(--linea2); padding: 5px 9px; }
+.mandos .seg button:last-child { border-right: 0; }
+.mandos select { width: 100%; background: var(--panel); color: var(--texto); border: 1px solid var(--linea2); border-radius: 8px; padding: 6px 8px; font: 13px var(--sans); margin-bottom: 6px; }
+.mandos.fila { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+canvas.rm { display: block; width: 100%; max-width: 620px; aspect-ratio: auto; height: auto; background: #000; border-radius: var(--r); cursor: crosshair; image-rendering: auto; }
+canvas.graf.espin { width: 100%; max-width: 620px; height: auto; background: var(--panel); border-radius: var(--r); }
+#pagina canvas.graf { width: 100%; height: auto; display: block; background: var(--panel); border-radius: var(--r); }
+.lectura { margin: 10px 0; padding: 10px 14px; border: 1px solid var(--linea); border-radius: var(--r); background: var(--panel); color: var(--texto2); font: 13.5px/1.5 var(--sans); }
+.lectura b { color: var(--texto); } .lectura small { display: block; color: var(--texto3); font: 12px var(--mono); margin-top: 2px; }
+.lectura .ok { color: var(--verde); } .lectura .mal { color: var(--rojo); }
+.lectura .ver3d { margin-top: 6px; }
+.barras { display: grid; gap: 5px; }
+.barra { display: grid; grid-template-columns: 112px 1fr 40px; gap: 8px; align-items: center; font-size: 12.5px; color: var(--texto2); }
+.barra i { display: block; height: 9px; background: var(--tinta2); border-radius: 5px; overflow: hidden; } .barra b { display: block; height: 100%; }
+.barra output { font: 12px var(--mono); color: var(--texto); text-align: right; }
+.tres { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.tres figure, .fila-graf figure { margin: 0; } .tres canvas { width: 100%; height: auto; display: block; background: #000; border-radius: var(--r); }
+figcaption { color: var(--texto3); font: 12px var(--sans); margin-top: 5px; text-align: center; }
+.fila-graf { display: grid; grid-template-columns: minmax(0, 1fr) 90px 200px; gap: 12px; align-items: start; }
+.hoja .formula { font: 15px var(--mono); color: var(--texto); background: var(--panel); border: 1px solid var(--linea); border-radius: 8px; padding: 8px 12px; }
+.hoja ul.fuentes li { font: 13px/1.5 var(--sans); color: var(--texto2); }
+@media (max-width: 860px) {
+  .sim, .mandos.fila, .fila-graf { grid-template-columns: 1fr; }
+  .tres { grid-template-columns: 1fr; }
+  .fila-graf figure:nth-child(2) canvas { max-width: 140px; }
+}
+.mandos [hidden], .deslz[hidden] { display: none !important; }
+.hoja p.nota { font: 12.5px/1.5 var(--sans); color: var(--texto3); padding: 6px 0; }
