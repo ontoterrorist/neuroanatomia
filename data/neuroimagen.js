@@ -8,14 +8,21 @@ export const FUENTES = {
   spm: 'SPM, función spm_hrf.m (Friston; Wellcome Centre for Human Neuroimaging): HRF canónica como diferencia de dos funciones gamma, parámetros por defecto [6 16 1 1 6 0 32]. https://github.com/spm/spm/blob/main/spm_hrf.m',
   friston: 'Friston KJ, Holmes AP, Worsley KJ, Poline JB, Frith CD, Frackowiak RSJ. Statistical parametric maps in functional imaging: a general linear approach. Hum Brain Mapp 1994. doi:10.1002/hbm.460020402',
   ogawa: 'Ogawa S, Lee TM, Kay AR, Tank DW. Brain magnetic resonance imaging with contrast dependent on blood oxygenation. PNAS 1990. doi:10.1073/pnas.87.24.9868',
+  oros: 'Oros-Peusquens AM, Loução R, Abbas Z, Gras V, Zimmermann M, Shah NJ. A single-scan, rapid whole-brain protocol for quantitative water content mapping with neurobiological implications. Front Neurol 2019 (CC BY), apartado «T2* Maps»: 21 voluntarios a 3 T, T2* de sustancia blanca 50,0 ± 2,2 ms y de sustancia gris 55,7 ± 2,6 ms. doi:10.3389/fneur.2019.01333 (PMC6934004)',
+  hornak13: 'Hornak JP. The Basics of MRI, cap. 13 «Advanced imaging techniques», apartado «Diffusion imaging»: S/S0 = exp[−(Gγδ)²D(Δ − δ/3)], la atenuación del eco por la difusión en la dirección del gradiente. https://www.cis.rit.edu/htbooks/mri/chap-12/chap-12.htm',
+  soares13: 'Soares JM, Marques P, Alves V, Sousa N. A hitchhiker’s guide to diffusion tensor imaging. Front Neurosci 2013 (CC BY): MD y FA (fórmulas), b ≈ 1000 s/mm² con ≥ 6 direcciones no colineales y una imagen sin gradiente, FACT, FA mínima 0,1–0,3 y giro máximo 40–70° como criterios de término, cruces de fibras. doi:10.3389/fnins.2013.00031 (PMC3594764)',
+  basser: 'Basser PJ, Mattiello J, Le Bihan D. MR diffusion tensor spectroscopy and imaging. Biophys J 1994 (solo resumen): los ejes del tejido coinciden con los autovectores del tensor efectivo y las difusividades con sus autovalores. doi:10.1016/s0006-3495(94)80775-1',
+  difusion: 'Supuestos del simulador de difusión (sin valor publicado leído): las difusividades D∥, D⊥ y de fondo son parámetros ilustrativos que se ajustan con los controles; el campo de 24×24 vóxeles es sintético (el atlas no tiene orientación de fibras); el tensor es plano con λ₃ = λ₂; el ruido es de Rice con la misma relación señal/ruido en todas las direcciones.',
   atlas: 'Volumen de etiquetas de 1 mm generado por tools/build-volumen.mjs a partir de las mallas del atlas (Allen Human Reference Atlas, CC BY 4.0; BodyParts3D, CC BY-SA 2.1 JP).',
 };
 
 // T1 y T2 en ms; PD relativa al agua. West 2013 da R1 (s⁻¹), R2 (s⁻¹) y PD (%); aquí T1 = 1/R1 y T2 = 1/R2.
 // sb = «Average white matter», sg = «Frontal cortex», lcr = «CSF».
+// T2s (T2*, solo a 3 T, solo sustancia gris y blanca) viene de Oros-Peusquens 2019; donde no hay T2* publicado la
+// señal de eco de gradiente usa T2 en su lugar (supuesto: subestima el decaimiento, porque T2* ≤ T2).
 export const TEJIDOS = {
-  sg: { n: 'Sustancia gris', c: '#9aa1ab', '1.5': { T1: 1235, T2: 97.2, PD: 0.881 }, '3': { T1: 1299, T2: 93.5, PD: 0.869 }, f: 'west' },
-  sb: { n: 'Sustancia blanca', c: '#e8e3d6', '1.5': { T1: 617, T2: 77.9, PD: 0.645 }, '3': { T1: 725, T2: 72.7, PD: 0.656 }, f: 'west' },
+  sg: { n: 'Sustancia gris', c: '#9aa1ab', '1.5': { T1: 1235, T2: 97.2, PD: 0.881 }, '3': { T1: 1299, T2: 93.5, PD: 0.869, T2s: 55.7 }, f: 'west', fT2s: 'oros' },
+  sb: { n: 'Sustancia blanca', c: '#e8e3d6', '1.5': { T1: 617, T2: 77.9, PD: 0.645 }, '3': { T1: 725, T2: 72.7, PD: 0.656, T2s: 50.0 }, f: 'west', fT2s: 'oros' },
   lcr: { n: 'Líquido cefalorraquídeo', c: '#5b82f2', '1.5': { T1: 4167, T2: 1149, PD: 1.038 }, '3': { T1: 3125, T2: 1266, PD: 0.944 }, f: 'west' },
   // tronco del encéfalo y médula: el atlas no separa gris y blanca; supuesto: mezcla 50/50
   mixto: { n: 'Tronco y médula (mezcla 50/50, supuesto)', c: '#c4c2c0', mezcla: ['sg', 'sb'] },

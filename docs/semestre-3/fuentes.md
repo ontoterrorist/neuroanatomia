@@ -21,8 +21,18 @@ Reglas: las mismas del Semestre 0. Cada número de los simuladores tiene su entr
 | Modelo lineal general para mapas estadísticos | Y = Xβ + ε; t por contraste | Friston et al. 1994, *Hum Brain Mapp*, doi:10.1002/hbm.460020402 (resumen leído) |
 | Contraste BOLD | la desoxihemoglobina venosa es un contraste paramagnético natural | Ogawa et al. 1990, *PNAS*, doi:10.1073/pnas.87.24.9868 (resumen leído) |
 | Equilibrio tras varios TR | «a few equilibrating cycles» antes de adquirir | Hornak cap. 10 |
+| T2* de sustancia blanca y gris a 3 T (fMRI y Bloch) | blanca 50,0 ± 2,2 ms; gris 55,7 ± 2,6 ms (21 voluntarios) | Oros-Peusquens et al. 2019, PMC6934004 (CC BY), texto completo. El eco de gradiente del fMRI usa estos T2*; para los tejidos sin T2* publicado cae a T2, **supuesto** que subestima el decaimiento (T2* ≤ T2) |
+| Señal de difusión | S/S0 = exp(−b·D); b ≈ 1000 s/mm²; ≥ 6 direcciones no colineales y una imagen sin gradiente | Hornak cap. 13 «Diffusion imaging»; Soares 2013 (texto completo) |
+| MD y FA | MD = (λ₁+λ₂+λ₃)/3; FA = √(3/2)·√Σ(λᵢ−MD)² / √Σλᵢ² | Soares 2013 |
+| Criterios de término de la tractografía | FA mínima 0,1–0,3 (adulto); giro máximo 40–70° | Soares 2013 (texto completo) |
+| Cruces de fibras | direcciones erróneas y terminaciones abruptas; afectan más a FA, axial y radial que a MD | Soares 2013 |
+| Ejes del tejido y autovectores | los ejes coinciden con los autovectores del tensor | Basser et al. 1994 (resumen) |
+| Difusividades D∥, D⊥ y de fondo, campo de 24×24, tensor plano, ruido de Rice | **supuestos**: parámetros ilustrativos, sin valor leído | Declarados en el recuadro «Límites del modelo» del simulador y en `FUENTES.difusion` |
+| Agentes de contraste y supresión de grasa (unidad 38) | relaxividad r₁, Gd³⁺, agentes ferromagnéticos que alteran T2*, cautela por FSN; saturación frente a inversión-recuperación | Hornak cap. 8 «Chemical Contrast Agents» y «Fat Suppression» (texto completo; paráfrasis) |
 
-## C. Comprobado con código (tools/probar-imagen.mjs, 32 pruebas)
+## C. Comprobado con código (tools/probar-imagen.mjs, 53 pruebas)
+
+A lo anterior se suman: T2* de eco de gradiente frente a eco de espín con los valores publicados; en difusión, ADC a lo largo y a través de la fibra, autovalores, S/S0, MD, FA, ajuste del tensor sin ruido, caída de la FA en un cruce, ruido reproducible por semilla, trayectoria que cruza el arco y umbrales de FA y de giro.
 
 Orden de contraste en T1 y T2 a ambos campos; el TI calculado anula LCR y grasa; TI → T1·ln 2 cuando TR → ∞; FFT ida y vuelta y Parseval; la HRF suma 1, tiene el pico a 5,0 s y rebote negativo; el GLM recupera β conocidos; la t de Student da P(T > 1,96) ≈ 0,025 con muchos grados de libertad.
 
@@ -44,6 +54,8 @@ Orden de contraste en T1 y T2 a ambos campos; el TI calculado anula LCR y grasa;
 | GLOVER | Glover GH, «Overview of functional magnetic resonance imaging», *Neurosurg Clin N Am* 2011, doi:10.1016/j.nec.2010.11.001 | PMC3073717 (texto completo vía NCBI) | Minería de texto y uso legítimo |
 | SOARES16 | Soares JM et al., «A hitchhiker’s guide to functional magnetic resonance imaging», *Front Neurosci* 2016, doi:10.3389/fnins.2016.00515 | PMC5102908 | CC BY |
 | SOARES13 | Soares JM et al., «A hitchhiker’s guide to diffusion tensor imaging», *Front Neurosci* 2013, doi:10.3389/fnins.2013.00031 | PMC3594764 | CC BY |
+| OROS | Oros-Peusquens AM et al., T2* de la sustancia blanca y gris a 3 T, 2019 | PMC6934004 | CC BY |
+| POWER | Power JD et al., «Spurious but systematic correlations in functional connectivity MRI networks arise from subject motion», *NeuroImage* 2012 | PMC3254728 (manuscrito de autor, vía NCBI efetch): **texto completo** | Mínera de texto y uso legítimo |
 | LINDQUIST | Lindquist MA, «The statistical analysis of fMRI data», *Statistical Science* 2008 | arXiv:0906.3662 (PDF completo) | arXiv |
 | ATTWELL | Attwell D et al., «Glial and neuronal control of brain blood flow», *Nature* 2010, doi:10.1038/nature09613 | PMC3206737 (manuscrito) | Minería de texto y uso legítimo |
 | ALSOP | Alsop DC et al., «Recommended implementation of arterial spin-labeled perfusion MRI for clinical applications», *Magn Reson Med* 2015, doi:10.1002/mrm.25197 | PMC4190138 (manuscrito) | Minería de texto y uso legítimo |
@@ -90,7 +102,8 @@ Solo cita verificada (Crossref): Hahn EL, «Spin Echoes», *Phys Rev* 80: 580–
 | 42 | Flujo ≥ 4 veces el ATP; glucólisis frente a fosforilación oxidativa; BOLD y potenciales de campo; ejemplo del cerebelo | ATTWELL |
 | 42 | LFP frente a espigas | Logothetis 2001, resumen |
 | 43 | Hb y HbO₂; secuencia temporal; eco de gradiente y vénulas; eco de espín a campos altos; < 1 % | GLOVER |
-| 43 | TE óptimo ≈ T2* local | SOARES16 |
+| 43 | TE óptimo ≈ T2* local; T2* de 50,0 y 55,7 ms a 3 T | SOARES16; OROS |
+| 38 | Agentes de contraste, relaxividad, supresión de grasa | HORNAK cap. 8 |
 | 43 | BOLD ≈ hiperemia − consumo de O₂ | ATTWELL |
 | 43 | Caída inicial, sobrepaso y rebote | Buxton 1998, resumen |
 | 43 | Cómo se sabe | Ogawa 1990, resumen; «en ratas»: GLOVER |
@@ -99,14 +112,15 @@ Solo cita verificada (Crossref): Hahn EL, «Spin Echoes», *Phys Rev* 80: 580–
 | 44 | < 1 %; movimiento; consenso de Ámsterdam 2012; recomendaciones; PLD 2000 ms; validación con PET | ALSOP |
 | 44 | Secuencia de difusión | HORNAK cap. 13 |
 | 44 | ADC | Le Bihan 1986, resumen |
-| 44 | Anisotropía; tensor; MD, FA; FACT y probabilística; varias orientaciones; HARDI, DSI, QBI | SOARES13 |
+| 44 | Anisotropía; tensor; MD, FA; FACT y probabilística; varias orientaciones; HARDI, DSI, QBI; umbrales de FA y de giro; cruces | SOARES13 |
+| 44 | Simulador de difusión (`i:difusion`) | Hornak cap. 13, SOARES13, Basser 1994; supuestos en `FUENTES.difusion` |
 | 44 | Cómo se sabe | Basser 1994, resumen |
 | 45 | Diseños, jitter, comparaciones, líneas de base, recomendaciones, potencia | SOARES16 «Experimental design», «Power analyses» |
 | 45 | Bloques para detectar, eventos para caracterizar; control de confusiones; ruido del escáner | GLOVER |
 | 45 | Cómo se sabe | Glover 1999, resumen |
 | 46 | Lista de pasos | GLOVER |
 | 46 | Tiempo de corte, cuerpo rígido, regla de un vóxel, scrubbing; Talairach y MNI152; normalización; suavizado; frecuencias; filtros; plegamiento del ruido | SOARES16 |
-| 46 | Cómo se sabe | Power 2012, resumen |
+| 46 | Cómo se sabe: FD (6 parámetros, esfera de 50 mm), DVARS, umbrales FD > 0,5 mm y DVARS > 0,5 %, 1 volumen antes y 2 después, ~25 % de datos perdidos en niños a 3 T | POWER, texto completo |
 | 47 | Y = Xβ + ε; convolución con HRF; primer nivel; crítica | SOARES16 |
 | 47 | Sistema lineal invariante; AR(p), ARMA(1,1); deriva | LINDQUIST |
 | 47 | Ruido, regresores sin interés, blanqueado | GLOVER |

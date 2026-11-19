@@ -261,14 +261,16 @@ canvas.graf.espin { width: 100%; max-width: 620px; height: auto; background: var
 .barra i { display: block; height: 9px; background: var(--tinta2); border-radius: 5px; overflow: hidden; } .barra b { display: block; height: 100%; }
 .barra output { font: 12px var(--mono); color: var(--texto); text-align: right; }
 .tres { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.tres figure, .fila-graf figure { margin: 0; } .tres canvas { width: 100%; height: auto; display: block; background: #000; border-radius: var(--r); }
+.dos { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.tres figure, .dos figure, .fila-graf figure { margin: 0; } .tres canvas, .dos canvas { width: 100%; height: auto; display: block; background: #000; border-radius: var(--r); }
+.dos canvas.pick { cursor: pointer; }
 figcaption { color: var(--texto3); font: 12px var(--sans); margin-top: 5px; text-align: center; }
 .fila-graf { display: grid; grid-template-columns: minmax(0, 1fr) 90px 200px; gap: 12px; align-items: start; }
 .hoja .formula { font: 15px var(--mono); color: var(--texto); background: var(--panel); border: 1px solid var(--linea); border-radius: 8px; padding: 8px 12px; }
 .hoja ul.fuentes li { font: 13px/1.5 var(--sans); color: var(--texto2); }
 @media (max-width: 860px) {
   .sim, .mandos.fila, .fila-graf { grid-template-columns: 1fr; }
-  .tres { grid-template-columns: 1fr; }
+  .tres, .dos { grid-template-columns: 1fr; }
   .fila-graf figure:nth-child(2) canvas { max-width: 140px; }
 }
 .mandos [hidden], .deslz[hidden] { display: none !important; }

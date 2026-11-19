@@ -2,12 +2,13 @@
 import { TEJIDOS, params, HRF_SPM } from '../data/neuroimagen.js';
 
 // ───────────────────────────── señal de RM (Hornak, cap. 10)
-/** Intensidad de un tejido con una secuencia. sec: 'se' (eco de espín) o 'ir' (inversión-recuperación 180-90-180, en magnitud). */
+/** Intensidad de un tejido con una secuencia. sec: 'se' (eco de espín), 'ir' (inversión-recuperación 180-90-180, en magnitud)
+ *  o 'ge' (eco de gradiente con pulso de 90°: como el eco de espín pero con T2* en lugar de T2; si el tejido no tiene T2*, usa T2). */
 export function senal(tej, B0, s) {
   const t = TEJIDOS[tej];
   if (t.mezcla) return t.mezcla.reduce((a, k) => a + senal(k, B0, s), 0) / t.mezcla.length;
   const p = params(tej, B0); if (!p) return 0;
-  const E1 = Math.exp(-s.TR / p.T1), E2 = Math.exp(-s.TE / p.T2);
+  const E1 = Math.exp(-s.TR / p.T1), E2 = Math.exp(-s.TE / (s.sec === 'ge' ? (p.T2s ?? p.T2) : p.T2));
   if (s.sec === 'ir') return p.PD * Math.abs(1 - 2 * Math.exp(-s.TI / p.T1) + E1) * E2;
   return p.PD * (1 - E1) * E2;
 }

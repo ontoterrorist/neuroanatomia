@@ -1,14 +1,17 @@
-// Neuroimagen: simuladores de resonancia magnética (contraste, espacio k, ecuaciones de Bloch) y de fMRI (BOLD + GLM).
-// Escanean un volumen de 1 mm generado a partir de las mallas del atlas (tools/build-volumen.mjs).
+// Neuroimagen: simuladores de resonancia magnética (contraste, espacio k, ecuaciones de Bloch), de fMRI (BOLD + GLM) y de difusión.
+// Los cuatro primeros escanean un volumen de 1 mm generado a partir de las mallas del atlas (tools/build-volumen.mjs);
+// el de difusión (js/imagen-difusion.js) usa un campo sintético porque el atlas no tiene orientación de fibras.
 import { TEJIDOS, PRESETS, FUENTES, tejidoDe, params } from '../data/neuroimagen.js';
 import { senal, tiNulo, corte, imagen, azar, fft2, hrf, regresor, glm, pT, tCrit } from './imagen-fisica.js';
 import { $, h, mem, TECLA } from './ui.js';
+import { difusion } from './imagen-difusion.js';
 
 export const HERRAMIENTAS = [
   { id: 'resonancia', n: 'Contraste en RM', sub: 'T1, T2, densidad protónica, FLAIR y STIR sobre la cabeza del atlas' },
   { id: 'espacio-k', n: 'El espacio k', sub: 'La imagen es la transformada de Fourier de lo que mide la antena' },
   { id: 'bloch', n: 'El espín: relajación y eco', sub: 'Magnetización, T1, T2, T2* y el eco de espín' },
   { id: 'fmri', n: 'fMRI: BOLD y modelo lineal general', sub: 'Diseña un experimento, simula la señal y busca la activación' },
+  { id: 'difusion', n: 'Difusión: del tensor a la tractografía', sub: 'Un tensor por vóxel, la FA y las trayectorias que siguen su eje principal' },
 ];
 
 let VOL = null;
@@ -57,7 +60,7 @@ export async function crear(app, esc, atlas) {
 
   function menu() {
     const izq = $('#izq'); izq.innerHTML = '';
-    izq.append(h('div', { class: 'cab' }, h('h2', null, 'Neuroimagen'), h('p', null, 'Simuladores de resonancia magnética y fMRI sobre la cabeza del atlas.')),
+    izq.append(h('div', { class: 'cab' }, h('h2', null, 'Neuroimagen'), h('p', null, 'Simuladores de resonancia magnética y fMRI sobre la cabeza del atlas, y de difusión sobre un campo de fibras sintético.')),
       h('div', { class: 'desplaza temario' },
         h('div', { ...TECLA, class: 'uni' + (!actual ? ' sel' : ''), onclick: () => abrir(null) }, h('span', null, 'Presentación')),
         HERRAMIENTAS.map((t, i) => h('div', { ...TECLA, class: 'uni' + (actual === t.id ? ' sel' : ''), onclick: () => abrir(t.id) }, h('span', { class: 'k' }, String(i + 1).padStart(2, '0')), h('span', null, t.n)))));
@@ -66,10 +69,10 @@ export async function crear(app, esc, atlas) {
   function portada() {
     return h('div', { class: 'hoja' },
       h('div', { class: 'sobre' }, 'Neuroimagen'), h('h1', null, 'Un resonador en el navegador'),
-      h('p', { class: 'bajada' }, 'Cuatro simuladores que escanean la cabeza del atlas: el mismo encéfalo que exploras en 3D, convertido en un volumen de vóxeles de 1 mm con sustancia gris, sustancia blanca, líquido cefalorraquídeo, hueso, grasa y tejido blando.'),
+      h('p', { class: 'bajada' }, 'Cuatro simuladores escanean la cabeza del atlas: el mismo encéfalo que exploras en 3D, convertido en un volumen de vóxeles de 1 mm con sustancia gris, sustancia blanca, líquido cefalorraquídeo, hueso, grasa y tejido blando. El quinto, de difusión, trabaja sobre un campo de fibras sintético, porque el atlas no tiene orientación de fibras.'),
       h('div', { class: 'tarjetas' }, HERRAMIENTAS.map((t, i) => h('button', { class: 'tarjeta', onclick: () => abrir(t.id) }, h('small', null, `Simulador ${i + 1}`), h('b', null, t.n), t.sub))),
       caja('Qué es y qué no es', h('p', null, 'Es un modelo docente: las intensidades salen de ecuaciones de señal y de tiempos de relajación publicados, y la fMRI se genera con una respuesta hemodinámica canónica y ruido gaussiano. No reproduce un equipo real: no hay bobinas, ni flujo, ni susceptibilidad, ni movimiento. El volumen es una segmentación esquemática hecha a partir de mallas 3D, no una imagen de un sujeto.')),
-      fuentes('atlas', 'west', 'jordan', 'hornak', 'spm', 'friston', 'ogawa'));
+      fuentes('atlas', 'west', 'oros', 'jordan', 'hornak', 'spm', 'friston', 'ogawa', 'hornak13', 'soares13', 'basser'));
   }
 
   // ═══════════════════════════════════════════ 1. Contraste
@@ -311,8 +314,8 @@ export async function crear(app, esc, atlas) {
       selR.innerHTML = ''; for (const o of opts) selR.append(h('option', { value: o, selected: o === P.region }, nombreDe(o)));
       const iR = V.nombres.indexOf(P.region), xMid = -V.origen[0] / (mm / 10);   // índice de x = 0 (línea media)
       const lado = (i) => P.lado === 'ambos' || (P.lado === 'izq' ? i > xMid : i < xMid);   // x > 0: hemisferio izquierdo
-      // por vóxel funcional: fracción activa, fracción de encéfalo y señal basal (ponderación T2 con TE 30 ms; T2 en lugar de T2*)
-      const sec = { sec: 'se', TR: P.TR * 1000, TE: 30 }, base = V.tej.map(t => senal(t, '3', sec));
+      // por vóxel funcional: fracción activa, fracción de encéfalo y señal basal (eco de gradiente, TE 30 ms; T2* publicado para sustancia gris y blanca)
+      const sec = { sec: 'ge', TR: P.TR * 1000, TE: 30 }, base = V.tej.map(t => senal(t, '3', sec));
       const act = new Float32Array(w * hh), enc = new Float32Array(w * hh), S0 = new Float32Array(w * hh);
       for (let r = 0; r < hh; r++) for (let c = 0; c < w; c++) {
         let a = 0, e = 0, s = 0, nn = 0;
@@ -444,8 +447,8 @@ export async function crear(app, esc, atlas) {
         h('li', null, 'Quita la convolución con la HRF: el modelo llega antes que la señal y pierde sensibilidad.'),
         h('li', null, 'Con bloques muy cortos (4 s), la HRF suaviza la alternancia y la señal casi desaparece.'),
         h('li', null, 'Fíjate en los vóxeles del borde de la región: solo una parte de su volumen responde (volumen parcial) y su t es menor.'))),
-      caja('Límites del modelo', h('p', null, 'La amplitud del BOLD, el ruido y la deriva son parámetros del simulador, no valores medidos. El ruido es blanco (las series reales tienen autocorrelación), la señal basal usa T2 en lugar de T2* (no hay un valor de T2* verificado en las fuentes leídas), no hay movimiento ni suavizado espacial, y la activación sigue el contorno de una estructura del atlas, no un mapa funcional real.')),
-      fuentes('spm', 'friston', 'ogawa', 'west', 'atlas')];
+      caja('Límites del modelo', h('p', null, 'La amplitud del BOLD, el ruido y la deriva son parámetros del simulador, no valores medidos. El ruido es blanco (las series reales tienen autocorrelación), la señal basal usa el T2* publicado a 3 T solo para la sustancia gris y la blanca (Oros-Peusquens 2019); en los demás tejidos usa T2 en su lugar, porque no se leyó un T2* para ellos, no hay movimiento ni suavizado espacial, y la activación sigue el contorno de una estructura del atlas, no un mapa funcional real.')),
+      fuentes('spm', 'friston', 'ogawa', 'west', 'oros', 'atlas')];
   }
 
   async function abrir(id) {
@@ -460,7 +463,7 @@ export async function crear(app, esc, atlas) {
     hoja.append(h('div', { class: 'sobre' }, `Neuroimagen · simulador ${HERRAMIENTAS.indexOf(t) + 1} de ${HERRAMIENTAS.length}`), h('h1', null, t.n), h('p', { class: 'bajada' }, t.sub));
     const espera = h('p', { class: 'nota' }, 'Cargando el volumen…'); hoja.append(espera);
     try {
-      const cont = await ({ resonancia, 'espacio-k': espacioK, bloch, fmri })[t.id]();
+      const cont = await ({ resonancia, 'espacio-k': espacioK, bloch, fmri, difusion: () => difusion({ h, mem, desl, seg, caja, fuentes, fmt }) })[t.id]();
       if (actual !== t.id) return;
       espera.remove(); hoja.append(...cont.flat());
       const us = (app.mods.curso?.UNIDADES || []).filter(u => u.html.includes('"i:' + t.id + '"'));
