@@ -3,10 +3,19 @@ import { Escenario } from './escena.js';
 import { Atlas } from './atlas.js';
 import { $, $$, h, esc, sinAcentos, mem } from './ui.js';
 
+// Incrustado: el curso abre esta misma página en un marco (?embed=1) al lado de la lección. Allí no hay curso ni evaluación:
+// esas peticiones se le devuelven a la página madre, y la dirección se reemplaza en vez de apilarse en el historial.
+const EMBED = new URLSearchParams(location.search).has('embed');
+const aPadre = (msg) => parent.postMessage(msg, location.origin);
+/** Paneles como cajones: en pantallas angostas y en el marco incrustado. */
+const conCajones = () => EMBED || matchMedia('(max-width: 860px)').matches;
+if (EMBED) $('#app').classList.add('embed');
+
 const app = {
   modo: 'atlas', mods: {},
   async ir(modo, arg) {
     if (!['atlas', 'vias', 'micro', 'imagen', 'curso', 'quiz'].includes(modo)) modo = 'atlas';
+    if (EMBED && (modo === 'curso' || modo === 'quiz')) { aPadre({ neuro: 'ir', modo, arg }); return; }
     this.mods[this.modo]?.salir?.();
     this.modo = modo;
     $('#app').dataset.modo = modo;
@@ -30,9 +39,10 @@ const app = {
   },
   /** Cambia la dirección: una entrada nueva en el historial (para que funcione «Atrás»), o la reemplaza. */
   ruta(dir, reemplazar = false) {
+    if (EMBED) aPadre({ neuro: 'ruta', dir });   // la página madre la usa para «pantalla completa»
     let ahora = location.hash; try { ahora = decodeURIComponent(ahora); } catch { /* tal cual */ }
     if (ahora === dir) return;
-    try { history[reemplazar || this.desdeHistorial || !location.hash ? 'replaceState' : 'pushState'](null, '', dir); } catch { /* sin historial */ }
+    try { history[reemplazar || EMBED || this.desdeHistorial || !location.hash ? 'replaceState' : 'pushState'](null, '', dir); } catch { /* sin historial */ }
   },
   async modulo(modo) {
     if (!this.mods[modo]) {
@@ -42,7 +52,7 @@ const app = {
     }
     return this.mods[modo];
   },
-  abrirFicha() { if (matchMedia('(max-width: 860px)').matches) { $('#app').classList.remove('abre-izq'); $('#app').classList.add('abre-der'); } },
+  abrirFicha() { if (!EMBED && conCajones()) { $('#app').classList.remove('abre-izq'); $('#app').classList.add('abre-der'); } },
   /** Acción genérica usada por enlaces «ver en 3D» del curso, la búsqueda y las fichas. */
   accion(a) {
     if (!a) return;
@@ -95,7 +105,7 @@ $('#btn-menu').addEventListener('click', () => { $('#app').classList.toggle('abr
 $('#btn-info').addEventListener('click', () => { $('#app').classList.toggle('abre-der'); $('#app').classList.remove('abre-izq'); });
 $('#lienzo').addEventListener('pointerdown', () => $('#app').classList.remove('abre-izq', 'abre-der'));
 // en pantallas angostas, elegir un elemento de la lista cierra el panel de navegación
-$('#izq').addEventListener('click', (e) => { if (matchMedia('(max-width: 860px)').matches && e.target.closest('.uni, .item, .presets button') && !e.target.closest('.ojo')) setTimeout(() => $('#app').classList.remove('abre-izq'), 0); });
+$('#izq').addEventListener('click', (e) => { if (conCajones() && e.target.closest('.uni, .item, .presets button') && !e.target.closest('.ojo')) setTimeout(() => $('#app').classList.remove('abre-izq'), 0); });
 
 // ───────────────────────────── búsqueda global
 const dlg = $('#dlg-buscar'), q = $('#q'), res = $('#resultados');
@@ -146,6 +156,9 @@ addEventListener('hashchange', async () => {
   finally { app.desdeHistorial = false; }
 });
 
+// la página madre (el curso) pide mostrar un modelo, una vía, una escena o un simulador
+if (EMBED) addEventListener('message', (e) => { if (e.origin === location.origin && e.source === parent && e.data?.neuro === 'accion') app.accion(e.data.a); });
+
 // ───────────────────────────── créditos
 $('#btn-acerca').addEventListener('click', async () => {
   const d = $('#dlg-acerca');
@@ -165,6 +178,7 @@ $('#btn-acerca').addEventListener('click', async () => {
     app.desdeHistorial = true; await app.ir(modo || 'atlas', arg); app.desdeHistorial = false;   // la dirección inicial se reemplaza, no se apila
     if (!modo || modo === 'atlas') { if (!arg) esc3d.encuadrar(atlas.cajaEncefalo, atlas.camIni.p.clone().sub(atlas.camIni.t), 1.15, 1); }
     c.classList.add('fuera'); setTimeout(() => { c.style.display = 'none'; }, 650);
+    if (EMBED) aPadre({ neuro: 'listo' });
   } catch (e) {
     console.error(e);
     $('.t', c).textContent = 'No se pudo cargar el atlas'; $('.d', c).textContent = String(e.message || e);

@@ -220,6 +220,28 @@ dialog::backdrop { background: rgba(4, 6, 9, .6); backdrop-filter: blur(3px); }
 #dlg-acerca .hoja { padding: 24px 26px 28px; } #dlg-acerca .hoja h1 { font-size: 24px; } #dlg-acerca .hoja p, #dlg-acerca .hoja li { font-size: 14.5px; }
 .cerrar { position: sticky; top: 8px; float: right; margin: 8px 8px 0 0; }
 
+/* ───── visor dividido: la lección a un lado y el modelo o simulador (marco ?embed=1) al otro */
+#visor { grid-area: visor; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--tinta2); border-left: 1px solid var(--linea); z-index: 25; }
+#visor[hidden] { display: none; }
+.visor-cab { display: flex; align-items: center; gap: 8px; padding: 6px 8px 6px 14px; border-bottom: 1px solid var(--linea); background: var(--panel); }
+.visor-t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 600 13px var(--sans); color: var(--oro2); }
+.visor-cab .btn { padding: 4px 10px; font-size: 12.5px; white-space: nowrap; }
+.visor-cuerpo { flex: 1; min-height: 0; position: relative; }
+.visor-cuerpo iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: var(--tinta); }
+#app.dividido { grid-template: var(--barra) minmax(0, 1fr) / var(--izq) minmax(0, 1fr) minmax(340px, 1.15fr); grid-template-areas: "barra barra barra" "izq lienzo visor"; }
+#app.dividido #pagina { grid-column: 2; }
+#app.dividido #der { display: none; }
+
+/* marco incrustado: sin marca ni curso/evaluación, y paneles como cajones aunque el marco sea ancho */
+#app.embed { grid-template: var(--barra) minmax(0, 1fr) / minmax(0, 1fr); grid-template-areas: "barra" "lienzo"; }
+#app.embed .marca, #app.embed #modos button[data-modo="curso"], #app.embed #modos button[data-modo="quiz"], #app.embed #btn-acerca { display: none; }
+#app.embed .solo-movil { display: inline-grid; }
+#app.embed #izq, #app.embed #der { position: fixed; top: var(--barra); bottom: 0; width: min(88vw, 360px); transition: transform .25s; box-shadow: 0 0 60px rgba(0, 0, 0, .6); }
+#app.embed #izq { left: 0; transform: translateX(-102%); } #app.embed #der { right: 0; transform: translateX(102%); }
+#app.embed.abre-izq #izq, #app.embed.abre-der #der { transform: none; }
+#app.embed #pagina { grid-column: 1; }
+#app.embed[data-modo="imagen"] #der { visibility: visible; }
+
 /* ───── móvil */
 @media (max-width: 1100px) { :root { --izq: 264px; --der: 320px; } #btn-buscar .txt, #btn-buscar kbd { display: none; } }
 @media (max-width: 860px) {
@@ -234,6 +256,8 @@ dialog::backdrop { background: rgba(4, 6, 9, .6); backdrop-filter: blur(3px); }
   #app.abre-izq #izq, #app.abre-der #der { transform: none; }
   #pagina { grid-column: 1; } .hoja { padding: 22px 16px 80px; } .hoja h1 { font-size: 26px; }
   #app[data-modo="curso"] #der, #app[data-modo="quiz"] #der, #app[data-modo="imagen"] #der { visibility: visible; }
+  #app.dividido { grid-template: var(--barra) minmax(0, 1fr) minmax(0, 1fr) / minmax(0, 1fr); grid-template-areas: "barra" "lienzo" "visor"; }
+  #app.dividido #pagina { grid-column: 1; } #visor { border-left: 0; border-top: 1px solid var(--linea); }
   .hb .tx { display: none; }
   #escala { bottom: 64px; }
 }

@@ -6,6 +6,7 @@ import { SEMESTRE_3 } from '../data/curso-3.js';
 import { PREGUNTAS } from '../data/preguntas.js';
 import { $, $$, h, mem, TECLA } from './ui.js';
 import { widgetPregunta } from './quiz.js';
+import { crearVisor } from './visor.js';
 
 export const CURSO = [SEMESTRE_0, SEMESTRE_1, SEMESTRE_2, SEMESTRE_3];
 // Numeración: el Semestre 0 rotula sus unidades 0.1…0.16 y los demás semestres siguen 1, 2, 3… sin correrse.
@@ -19,6 +20,7 @@ const DE = CURSO.map((s, i) => UNIDADES.filter(u => u.sem === i));   // unidades
 
 export async function crear(app, esc, atlas) {
   let actual = null;
+  const visor = crearVisor(app, (id) => abrir(id));
   const prog = () => mem.get('curso', { hechas: {}, ultima: null });
   app.indices.push(() => UNIDADES.map(u => ({ t: 'Curso', n: `${u.num}. ${u.n}`, sub: u.baj, a: 'l:' + u.id })));
   app.leccionesDe = (base) => UNIDADES.filter(u => u.rel?.includes(base));
@@ -79,7 +81,21 @@ export async function crear(app, esc, atlas) {
     app.ruta('#curso' + (u ? '/' + u.id : ''));
   }
 
-  $('#pagina').addEventListener('click', (e) => { const b = e.target.closest('.ver3d'); if (b?.dataset.a) app.accion(b.dataset.a); });
+  // Título del visor: el texto del botón, salvo que sea genérico («ver»); entonces, la primera celda de su fila o el último <strong> que lo precede.
+  const rotuloDe = (b) => {
+    const t = b.textContent.replace(/^◈\s*/, '').trim();
+    if (t.length > 4) return t;
+    const fila = b.closest('tr')?.cells[0]?.textContent.trim();
+    if (fila) return fila;
+    const previos = [...b.closest('.hoja').querySelectorAll('strong')].filter(s => s.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+    return previos.at(-1)?.textContent.trim() || t;
+  };
+  // Un enlace a otra lección navega en el curso; cualquier otro (estructura, vía, escena, simulador) se abre al costado, sin salir de la lección.
+  $('#pagina').addEventListener('click', (e) => {
+    const b = e.target.closest('.ver3d'), a = b?.dataset.a;
+    if (!a) return;
+    if (a.startsWith('l:')) app.accion(a); else visor.abrir(a, rotuloDe(b));
+  });
 
-  return { entrar: (arg) => abrir(typeof arg === 'string' && UNIDADES.some(u => u.id === arg) ? arg : actual), salir() { }, de: app.leccionesDe, UNIDADES };
+  return { entrar: (arg) => abrir(typeof arg === 'string' && UNIDADES.some(u => u.id === arg) ? arg : actual), salir: visor.cerrar, de: app.leccionesDe, UNIDADES };
 }
