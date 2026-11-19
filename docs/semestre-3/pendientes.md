@@ -12,9 +12,19 @@ Actualizado el 2026-11-18.
 | Amplitud típica del BOLD, ruido y deriva | parámetros libres del simulador | Valores publicados con su campo y su TE |
 | Hueso, arterias y ojo | sin señal / como LCR | Parámetros y un modelo de flujo |
 
-## Lecciones
+## Unidades
 
-Ninguna redactada: esperan tu visto bueno al temario de `diseno.md`.
+Las 16 unidades están redactadas. Quedó fuera por falta de fuente leída:
+
+| Tema | Unidad | Qué falta |
+| --- | --- | --- |
+| Anatomía de las arterias y sus territorios | 41 | Se remite a la unidad 8 y al atlas; no se reescribió |
+| Agentes de contraste (gadolinio) y supresión de grasa | 38 | No se leyeron esos apartados de Hornak cap. 8 |
+| Hallazgos incidentales en estudios de investigación | 36 | Sin fuente abierta leída |
+| Contenido de Hahn 1950 y Lauterbur 1973 | 37, 39 | Solo cita verificada en Crossref |
+| Mansfield 1977 (origen de la EPI) | 40 | Solo metadatos; no se usó |
+| Texto completo de los trabajos clásicos de los recuadros «Cómo se sabe» | 35–50 | Solo se leyeron sus resúmenes |
+| Normas actuales sobre implantes y marcapasos | 36 | Hornak y Hartwig no están al día; la unidad remite al protocolo del centro |
 
 ## Técnico
 

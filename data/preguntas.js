@@ -1,9 +1,11 @@
 // Banco de preguntas. Formato: [unidad, enunciado, [respuesta correcta, distractor, distractor, distractor], explicación]
 // La respuesta correcta va SIEMPRE primero; la app baraja las opciones al mostrarlas.
 import { PREGUNTAS_0 } from './preguntas-0.js';
+import { PREGUNTAS_3 } from './preguntas-3.js';
 
 export const PREGUNTAS = [
   ...PREGUNTAS_0,
+  ...PREGUNTAS_3,
   // ───── Semestre I
   ['u01', '¿Cuál de estas estructuras deriva del diencéfalo?', ['Tálamo', 'Putamen', 'Colículo superior', 'Cerebelo'], 'El diencéfalo origina el tálamo, el hipotálamo, el epitálamo y el subtálamo. El putamen es telencefálico; el colículo, mesencefálico; el cerebelo, metencefálico.'],
   ['u01', 'Un grupo de somas neuronales situado fuera del sistema nervioso central se denomina:', ['Ganglio', 'Núcleo', 'Tracto', 'Lemnisco'], 'Ganglio = somas en el SNP; núcleo = somas en el SNC. Tracto y lemnisco son haces de axones del SNC.'],

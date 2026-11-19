@@ -463,6 +463,8 @@ export async function crear(app, esc, atlas) {
       const cont = await ({ resonancia, 'espacio-k': espacioK, bloch, fmri })[t.id]();
       if (actual !== t.id) return;
       espera.remove(); hoja.append(...cont.flat());
+      const us = (app.mods.curso?.UNIDADES || []).filter(u => u.html.includes('"i:' + t.id + '"'));
+      if (us.length) hoja.append(h('h3', null, 'Unidades del curso que usan este simulador'), h('p', null, us.map(u => h('button', { class: 'ver3d', onclick: () => app.ir('curso', u.id) }, `◈ ${u.rot}. ${u.n}`))));
     } catch (e) { console.error(e); espera.textContent = 'No se pudo cargar el simulador: ' + (e.message || e); }
   }
 

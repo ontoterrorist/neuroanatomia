@@ -2,11 +2,12 @@
 import { SEMESTRE_0 } from '../data/curso-0.js';
 import { SEMESTRE_1 } from '../data/curso-1.js';
 import { SEMESTRE_2 } from '../data/curso-2.js';
+import { SEMESTRE_3 } from '../data/curso-3.js';
 import { PREGUNTAS } from '../data/preguntas.js';
 import { $, $$, h, mem, TECLA } from './ui.js';
 import { widgetPregunta } from './quiz.js';
 
-export const CURSO = [SEMESTRE_0, SEMESTRE_1, SEMESTRE_2];
+export const CURSO = [SEMESTRE_0, SEMESTRE_1, SEMESTRE_2, SEMESTRE_3];
 // Numeración: el Semestre 0 rotula sus unidades 0.1…0.16 y los demás semestres siguen 1, 2, 3… sin correrse.
 // `sem` es el índice en CURSO (0 = Semestre 0); `num` y `rot` son las etiquetas que muestra toda la app.
 let nSem = 0;
@@ -39,7 +40,7 @@ export async function crear(app, esc, atlas) {
     const p = prog(); const sig = UNIDADES.find(u => !p.hechas[u.id]) || UNIDADES[0];
     return h('div', { class: 'hoja' },
       h('div', { class: 'sobre' }, 'Curso de neuroanatomía funcional'), h('h1', null, `${['Cero', 'Un', 'Dos', 'Tres', 'Cuatro', 'Cinco'][CURSO.length]} semestres, del canal iónico a la conducta`),
-      h('p', { class: 'bajada' }, 'El temario sigue el de un curso universitario exigente de neuroanatomía y neurociencia: primero la célula, después la estructura y la función. Cada unidad enlaza con el modelo tridimensional, las vías animadas y las escenas microscópicas.'),
+      h('p', { class: 'bajada' }, 'El temario sigue el de un curso universitario exigente de neuroanatomía y neurociencia: primero la célula, después la estructura y la función, y al final cómo se las observa con resonancia magnética. Cada unidad enlaza con el modelo tridimensional, las vías animadas y las escenas microscópicas.'),
       h('p', null, h('button', { class: 'btn pri', onclick: () => abrir(p.ultima && !p.hechas[p.ultima] ? p.ultima : sig.id) }, Object.keys(p.hechas).length ? 'Continuar donde quedaste' : 'Empezar por el Semestre 0 (neurobiología celular)'), ' ', Object.keys(p.hechas).length ? null : [h('button', { class: 'btn', onclick: () => abrir(DE[1][0].id) }, 'Empezar por el Semestre I'), ' '], h('button', { class: 'btn', onclick: () => app.ir('quiz') }, 'Ir a la evaluación')),
       CURSO.map((s, i) => [h('h2', null, `${s.n}: ${s.sub}`), h('div', { class: 'tarjetas' }, UNIDADES.filter(x => x.sem === i).map(u => h('button', { class: 'tarjeta', onclick: () => abrir(u.id) }, h('small', null, u.rot + (p.hechas[u.id] ? ' · \u2713 completada' : '')), h('b', null, u.n), u.baj)))]),
       h('h2', null, 'Cómo estudiar con esta aplicación'),

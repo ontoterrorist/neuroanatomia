@@ -1,6 +1,6 @@
 # Semestre III · Neuroimagen — diseño (Fase 1)
 
-> Redactado el 2026-11-18. Estado: **simuladores hechos y probados; lecciones sin redactar, esperando tu revisión del temario.**
+> Redactado el 2026-11-18. Estado: **temario aprobado por el usuario el 2026-11-18 («Sí, redacta»); las 16 unidades (35–50) y 78 preguntas están redactadas y en la app.** Se tomaron las opciones por defecto de §5: nombre «Semestre III · Neuroimagen: de la física al mapa funcional», orden 0 → I → II → III y ningún simulador nuevo.
 > Mismo método que el Semestre 0 (`docs/prompt-unidad-0-neurobiologia-celular.md`): nada entra a la app sin una fuente abierta y leída en la sesión, anotada en `fuentes.md`. Lo que no se pudo verificar está en `pendientes.md`.
 
 ## 1. Qué ya está en la app

@@ -42,13 +42,14 @@ export async function crear(app, esc, atlas) {
         h('button', { class: 'tarjeta', onclick: () => serie(baraja(CASOS).map(pc), 'Casos clínicos de localización') }, h('b', null, 'Casos clínicos'), `${CASOS.length} viñetas: ¿dónde está la lesión?`),
         h('button', { class: 'tarjeta', onclick: () => serie(baraja(PREGUNTAS.filter(q => q[0].startsWith('u0-'))).slice(0, 20).map(pq), 'Semestre 0 · neurobiología celular') }, h('b', null, 'Semestre 0'), 'Neurobiología celular: 20 preguntas.'),
         h('button', { class: 'tarjeta', onclick: () => serie(baraja(PREGUNTAS.filter(q => esDe(q, 1, 17))).slice(0, 25).map(pq), 'Semestre I · estructura') }, h('b', null, 'Semestre I'), 'Estructura: 25 preguntas.'),
-        h('button', { class: 'tarjeta', onclick: () => serie(baraja(PREGUNTAS.filter(q => esDe(q, 18, 99))).slice(0, 25).map(pq), 'Semestre II · función') }, h('b', null, 'Semestre II'), 'Función y clínica: 25 preguntas.')),
+        h('button', { class: 'tarjeta', onclick: () => serie(baraja(PREGUNTAS.filter(q => esDe(q, 18, 34))).slice(0, 25).map(pq), 'Semestre II · función') }, h('b', null, 'Semestre II'), 'Función y clínica: 25 preguntas.'),
+        h('button', { class: 'tarjeta', onclick: () => serie(baraja(PREGUNTAS.filter(q => esDe(q, 35, 50))).slice(0, 25).map(pq), 'Semestre III · neuroimagen') }, h('b', null, 'Semestre III'), 'Neuroimagen: 25 preguntas.')),
       h('h2', null, 'Por unidad'),
       h('table', { class: 't' }, h('tr', null, h('th', null, 'Unidad'), h('th', null, 'Preguntas'), h('th', null, 'Aciertos'), h('th', null, '')),
         ...U.filter(u => PREGUNTAS.some(q => q[0] === u.id)).map(u => { const r = s.u[u.id]; return h('tr', null, h('td', null, nombreU(u.id)), h('td', null, PREGUNTAS.filter(q => q[0] === u.id).length), h('td', null, r ? `${r[0]} / ${r[1]}` : '—'), h('td', null, h('button', { class: 'btn', onclick: () => serie(baraja(PREGUNTAS.filter(q => q[0] === u.id)).map(pq), nombreU(u.id)) }, 'Responder'))); }))));
     pag.scrollTop = 0;
   }
-  // Las unidades de los semestres se llaman u01..u34; las del Semestre 0, u0-01..u0-16 (no entran en estos rangos).
+  // Las unidades de los semestres se llaman u01..u50; las del Semestre 0, u0-01..u0-16 (no entran en estos rangos).
   const esDe = (q, a, b) => /^u\d\d$/.test(q[0]) && +q[0].slice(1) >= a && +q[0].slice(1) <= b;
   const pq = (q) => ({ u: q[0], q: q[1], o: q[2], e: q[3] });
   const pc = (q) => ({ u: q[0], q: q[1], o: q[2], e: q[3], a: q[4] });
