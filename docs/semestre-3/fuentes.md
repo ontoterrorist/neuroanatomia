@@ -129,7 +129,7 @@ Solo cita verificada (Crossref): Hahn EL, «Spin Echoes», *Phys Rev* 80: 580–
 | 48 | Pruebas de grupo y permutación; 100 000 pruebas; FWER, FDR, cúmulos, ROI; tamaño del efecto | SOARES16 |
 | 48 | Inferencias de grupo | GLOVER |
 | 48 | p del máximo y resels; FDR | Worsley 1992 y Genovese 2002, resúmenes |
-| 48 | Cómo se sabe | Eklund 2016, resumen |
+| 48 | Cómo se sabe | Eklund 2016, resumen de PNAS (3 millones, 499 controles, hasta 70 %); borrador arXiv:1511.01863 v1 (texto completo, CC BY): 1 920 000 análisis, hasta 60 %, umbral que define el cúmulo como parámetro principal, permutación sin cambios. Las cifras de ambas versiones se citan por separado |
 | 49 | Conectividad funcional y efectiva | LINDQUIST § 6.3 |
 | 49 | Métodos; ICA; redes en reposo; Granger, DCM, SEM, PPI, MVPA | SOARES16 |
 | 49 | Redes y enfermedad | GLOVER |
